@@ -1,7 +1,9 @@
 "use client";
 
+import { Button } from "@nextui-org/react";
 import { Form, FormikProvider, useFormik } from "formik";
 import { type ComponentPropsWithoutRef, type FC } from "react";
+import { twMerge } from "tailwind-merge";
 import { FormikInput } from "../fields/FormikInput";
 import { FormikPasswordInput } from "../fields/FormikPasswordInput";
 
@@ -25,7 +27,7 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
 
   return (
     <FormikProvider value={formik}>
-      <Form {...rest} className={className}>
+      <Form {...rest} className={twMerge("grid grid-cols-1 gap-3", className)}>
         <pre>{JSON.stringify(formik.values)}</pre>
         <FormikInput name="email" label="Email" placeholder="Email" />
         <FormikPasswordInput
@@ -33,6 +35,9 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
           label="Password"
           placeholder="Password"
         />
+        <Button type="submit" className="justify-self-start">
+          Submit
+        </Button>
       </Form>
     </FormikProvider>
   );
