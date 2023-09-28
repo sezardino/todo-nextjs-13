@@ -17,6 +17,7 @@ export type AuthFormProps = Omit<
   "onSubmit"
 > & {
   onSubmit: (values: AuthFormValues) => void;
+  type: "login" | "registration";
 };
 
 export const AuthForm: FC<AuthFormProps> = (props) => {
@@ -32,7 +33,7 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
 
   return (
     <FormikProvider value={formik}>
-      <Form {...rest} className={twMerge("grid grid-cols-1 gap-3", className)}>
+      <Form {...rest} className={twMerge("space-y-6", className)}>
         <pre>{JSON.stringify(formik.values)}</pre>
         <FormikInput name="email" label="Email" placeholder="Email" />
         <FormikPasswordInput

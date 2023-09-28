@@ -15,7 +15,7 @@ const AuthPage = () => {
 
   return (
     <>
-      <AuthTemplate onSignIn={signInHandler} />
+      <AuthTemplate title="Sign In" type="login" onFormSubmit={signInHandler} />
     </>
   );
 };

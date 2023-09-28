@@ -12,6 +12,7 @@ const authorize: CredentialsConfig["authorize"] = async (credentials) => {
   return { email: credentials?.email, id: "1" };
 };
 
-const handler = NextAuth(getNextAuthOptions(authorize));
+export const nextAuthOptions = getNextAuthOptions(authorize);
+const handler = NextAuth(nextAuthOptions);
 
 export { handler as GET, handler as POST };
