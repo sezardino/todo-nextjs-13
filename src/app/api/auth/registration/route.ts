@@ -25,12 +25,8 @@ export const POST = async (req: Request) => {
   });
 
   if (isUserExist) {
-    return NextResponse.json(
-      { errors: { email: "Wrong credentials" } },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: "Wrong credentials" }, { status: 400 });
   }
-
   try {
     await prisma.user.create({
       data: {

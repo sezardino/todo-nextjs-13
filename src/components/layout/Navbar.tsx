@@ -2,7 +2,10 @@
 
 import { type ComponentPropsWithoutRef, type FC } from "react";
 
+import { ProjectPageUrls } from "@/const/url";
 import { Disclosure } from "@headlessui/react";
+import { Button } from "@nextui-org/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { Dropdown } from "../base/Dropdown";
@@ -19,6 +22,43 @@ const navigation = [
 
 export const Navbar: FC<NavbarProps> = (props) => {
   const { className, ...rest } = props;
+  const { data } = useSession();
+
+  const notLoggedUserInnerJSX = (
+    <div className="flex gap-2 flex-wrap items-center">
+      <Button size="sm" onClick={() => signIn()}>
+        Login
+      </Button>
+      <Button as={Link} href={ProjectPageUrls.registration} size="sm">
+        Registration
+      </Button>
+    </div>
+  );
+
+  const loggedUserInnerJSX = (
+    <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+      <button
+        type="button"
+        className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+      >
+        <span className="absolute -inset-1.5" />
+        <span className="sr-only">View notifications</span>
+        <Icon name="HiBell" className="h-6 w-6" aria-hidden="true" />
+      </button>
+
+      {/* Profile dropdown */}
+      <Dropdown
+        items={[
+          { label: "Profile", to: "#" },
+          { label: "Logout", onClick: signOut },
+        ]}
+      >
+        <span className="absolute -inset-1.5" />
+        <span className="sr-only">Open user menu</span>
+        <Icon name="HiUserCircle" size={32} />
+      </Dropdown>
+    </div>
+  );
 
   return (
     <Disclosure
@@ -74,23 +114,7 @@ export const Navbar: FC<NavbarProps> = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <Icon name="HiBell" className="h-6 w-6" aria-hidden="true" />
-                </button>
-
-                {/* Profile dropdown */}
-                <Dropdown items={[{ label: "Profile", to: "#" }]}>
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <Icon name="HiUserCircle" size={32} />
-                </Dropdown>
-              </div>
+              {!!data?.user ? loggedUserInnerJSX : notLoggedUserInnerJSX}
             </div>
           </div>
 

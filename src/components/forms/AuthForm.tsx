@@ -1,7 +1,9 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { ProjectPageUrls } from "@/const/url";
+import { Button, Link } from "@nextui-org/react";
 import { Form, FormikProvider, useFormik } from "formik";
+import LinkComponent from "next/link";
 import { type ComponentPropsWithoutRef, type FC } from "react";
 import { twMerge } from "tailwind-merge";
 import { FormikInput } from "../fields/FormikInput";
@@ -40,6 +42,21 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
           label="Password"
           placeholder="Password"
         />
+        {type === "registration" && (
+          <Link as={LinkComponent} size="sm" href={ProjectPageUrls.login}>
+            Already have an account?
+          </Link>
+        )}
+        {type === "login" && (
+          <Link
+            as={LinkComponent}
+            size="sm"
+            href={ProjectPageUrls.registration}
+          >
+            Don&rsquo;t have an account?{" "}
+          </Link>
+        )}
+
         <Button type="submit" className="w-full">
           {type === "login" ? "Login" : "Register"}
         </Button>
