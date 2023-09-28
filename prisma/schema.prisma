@@ -43,13 +43,22 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  name     String?
-  email    String? @unique
-  login    String  @unique
-  password String
+  name         String?
+  email        String?    @unique
+  login        String     @unique
+  password     String
+  bio          String?
+  status       UserStatus @default(ACTIVE)
+  socials      String[]   @default([])
+  localization String?
 
   emailVerified DateTime?
   image         String?
