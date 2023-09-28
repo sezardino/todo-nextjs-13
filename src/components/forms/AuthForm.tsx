@@ -6,6 +6,8 @@ import { Form, FormikProvider, useFormik } from "formik";
 import LinkComponent from "next/link";
 import { type ComponentPropsWithoutRef, type FC } from "react";
 import { twMerge } from "tailwind-merge";
+import z from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
 import { FormikInput } from "../fields/FormikInput";
 import { FormikPasswordInput } from "../fields/FormikPasswordInput";
 
@@ -30,6 +32,12 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
       email: "",
       password: "",
     },
+    validationSchema: toFormikValidationSchema(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(8),
+      })
+    ),
     onSubmit,
   });
 
