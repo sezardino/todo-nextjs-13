@@ -1,10 +1,9 @@
-import { prisma } from "@/libs/prisma";
-import { passwordService } from "@/services/password";
+import { dbService } from "@/services/db";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const validationSchema = z.object({
-  email: z.string().email(),
+  login: z.string(),
   password: z.string(),
 });
 
@@ -20,22 +19,23 @@ export const POST = async (req: Request) => {
     );
   }
 
-  const isUserExist = await prisma.user.findUnique({
-    where: { email: validation.data.email },
-  });
-
-  if (isUserExist) {
-    return NextResponse.json({ message: "Wrong credentials" }, { status: 400 });
-  }
   try {
-    await prisma.user.create({
-      data: {
-        email: validation.data.email,
-        password: await passwordService.hash(validation.data.password),
-      },
+    const response = await dbService.auth.registration({
+      login: validation.data.login,
+      password: validation.data.password,
     });
 
-    return NextResponse.json({ message: "User created" }, { status: 201 });
+    if ("code" in response) {
+      return NextResponse.json(
+        { message: response.message },
+        { status: response.code }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "User created", user: response },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json({ error }, { status: 400 });
   }

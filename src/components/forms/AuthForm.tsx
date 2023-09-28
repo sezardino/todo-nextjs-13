@@ -12,7 +12,7 @@ import { FormikInput } from "../fields/FormikInput";
 import { FormikPasswordInput } from "../fields/FormikPasswordInput";
 
 export interface AuthFormValues {
-  email: string;
+  login: string;
   password: string;
 }
 
@@ -29,12 +29,12 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
 
   const formik = useFormik<AuthFormValues>({
     initialValues: {
-      email: "",
+      login: "",
       password: "",
     },
     validationSchema: toFormikValidationSchema(
       z.object({
-        email: z.string().email(),
+        login: z.string(),
         password: z.string().min(8),
       })
     ),
@@ -44,7 +44,7 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
   return (
     <FormikProvider value={formik}>
       <Form {...rest} className={twMerge("space-y-6", className)}>
-        <FormikInput name="email" label="Email" placeholder="Email" />
+        <FormikInput name="login" label="Login" placeholder="Login" />
         <FormikPasswordInput
           name="password"
           label="Password"

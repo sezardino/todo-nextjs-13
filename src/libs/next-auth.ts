@@ -25,7 +25,7 @@ export const getNextAuthOptions = (
         user: {
           ...session.user,
           id: token.id,
-          email: token.email,
+          login: token.login,
         },
       };
     },
@@ -35,7 +35,7 @@ export const getNextAuthOptions = (
         return {
           ...token,
           id: user.id,
-          email: user.email,
+          login: user.login,
           name: user.name,
         };
       }
@@ -47,7 +47,7 @@ export const getNextAuthOptions = (
       name: "credentials",
       type: "credentials",
       credentials: {
-        email: { type: "email", placeholder: "name@example.com" },
+        login: { type: "login", placeholder: "login" },
         password: {
           type: "password",
           placeholder: String.fromCharCode(9679).repeat(10),
