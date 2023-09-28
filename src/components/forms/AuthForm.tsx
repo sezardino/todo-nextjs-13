@@ -1,14 +1,18 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { ProjectPageUrls } from "@/const/url";
+import { Button, Link } from "@nextui-org/react";
 import { Form, FormikProvider, useFormik } from "formik";
+import LinkComponent from "next/link";
 import { type ComponentPropsWithoutRef, type FC } from "react";
 import { twMerge } from "tailwind-merge";
+import z from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
 import { FormikInput } from "../fields/FormikInput";
 import { FormikPasswordInput } from "../fields/FormikPasswordInput";
 
 export interface AuthFormValues {
-  email: string;
+  login: string;
   password: string;
 }
 
@@ -25,21 +29,42 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
 
   const formik = useFormik<AuthFormValues>({
     initialValues: {
-      email: "",
+      login: "",
       password: "",
     },
+    validationSchema: toFormikValidationSchema(
+      z.object({
+        login: z.string(),
+        password: z.string().min(8),
+      })
+    ),
     onSubmit,
   });
 
   return (
     <FormikProvider value={formik}>
       <Form {...rest} className={twMerge("space-y-6", className)}>
-        <FormikInput name="email" label="Email" placeholder="Email" />
+        <FormikInput name="login" label="Login" placeholder="Login" />
         <FormikPasswordInput
           name="password"
           label="Password"
           placeholder="Password"
         />
+        {type === "registration" && (
+          <Link as={LinkComponent} size="sm" href={ProjectPageUrls.login}>
+            Already have an account?
+          </Link>
+        )}
+        {type === "login" && (
+          <Link
+            as={LinkComponent}
+            size="sm"
+            href={ProjectPageUrls.registration}
+          >
+            Don&rsquo;t have an account?{" "}
+          </Link>
+        )}
+
         <Button type="submit" className="w-full">
           {type === "login" ? "Login" : "Register"}
         </Button>

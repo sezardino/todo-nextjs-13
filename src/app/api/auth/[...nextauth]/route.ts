@@ -1,12 +1,11 @@
 import { getNextAuthOptions } from "@/libs/next-auth";
-import { prisma } from "@/libs/prisma";
-import { passwordService } from "@/services/password";
+import { dbService } from "@/services/db";
 import NextAuth from "next-auth";
 import { CredentialsConfig } from "next-auth/providers/credentials";
 import { z } from "zod";
 
 const validationSchema = z.object({
-  email: z.string().email(),
+  login: z.string(),
   password: z.string(),
 });
 
@@ -15,20 +14,21 @@ const authorize: CredentialsConfig["authorize"] = async (credentials) => {
 
   if (!validation.success) return null;
 
-  const user = await prisma.user.findUnique({
-    where: { email: validation.data.email },
-  });
+  try {
+    const response = await dbService.auth.login({
+      login: validation.data.login,
+      password: validation.data.password,
+    });
 
-  if (!user) return null;
+    if ("code" in response || !response) return null;
 
-  const isPasswordMatch = await passwordService.compare(
-    validation.data.password,
-    user.password
-  );
-
-  if (!isPasswordMatch) return null;
-
-  return { email: user.email, id: user.id };
+    return {
+      id: response.id,
+      login: response.login,
+    };
+  } catch (error) {
+    return null;
+  }
 };
 
 export const nextAuthOptions = getNextAuthOptions(authorize);
