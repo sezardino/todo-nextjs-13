@@ -1,4 +1,5 @@
 import { prisma } from "@/libs/prisma";
+import { passwordService } from "@/services/password";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -9,7 +10,7 @@ const validationSchema = z.object({
 
 export const POST = async (req: Request) => {
   const body = await req.json();
-  console.log(process.env.DATABASE_URL);
+
   const validation = validationSchema.safeParse(body);
 
   if (!validation.success) {
@@ -32,7 +33,10 @@ export const POST = async (req: Request) => {
 
   try {
     await prisma.user.create({
-      data: { email: validation.data.email },
+      data: {
+        email: validation.data.email,
+        password: await passwordService.hash(validation.data.password),
+      },
     });
 
     return NextResponse.json({ message: "User created" }, { status: 201 });
