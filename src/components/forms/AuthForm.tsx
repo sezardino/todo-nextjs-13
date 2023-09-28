@@ -21,7 +21,7 @@ export type AuthFormProps = Omit<
 };
 
 export const AuthForm: FC<AuthFormProps> = (props) => {
-  const { onSubmit, className, ...rest } = props;
+  const { type, onSubmit, className, ...rest } = props;
 
   const formik = useFormik<AuthFormValues>({
     initialValues: {
@@ -34,15 +34,14 @@ export const AuthForm: FC<AuthFormProps> = (props) => {
   return (
     <FormikProvider value={formik}>
       <Form {...rest} className={twMerge("space-y-6", className)}>
-        <pre>{JSON.stringify(formik.values)}</pre>
         <FormikInput name="email" label="Email" placeholder="Email" />
         <FormikPasswordInput
           name="password"
           label="Password"
           placeholder="Password"
         />
-        <Button type="submit" className="justify-self-start">
-          Submit
+        <Button type="submit" className="w-full">
+          {type === "login" ? "Login" : "Register"}
         </Button>
       </Form>
     </FormikProvider>
