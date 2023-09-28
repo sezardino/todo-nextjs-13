@@ -2,12 +2,22 @@
 
 import { AuthFormValues } from "@/components/forms/AuthForm";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
+import { ProjectApiUrls, ProjectPageUrls } from "@/const/url";
+import { RegistrationDto } from "@/services/db/modules/auth/types";
+import { useRouter } from "next/navigation";
 
 const RegistrationPage = () => {
+  const router = useRouter();
+
   const registrationHandler = async (data: AuthFormValues) => {
-    const res = await fetch("/api/auth/registration", {
+    const body: RegistrationDto = {
+      login: data.login,
+      password: data.password,
+    };
+
+    const res = await fetch(ProjectApiUrls.registration, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
     });
 
@@ -15,7 +25,7 @@ const RegistrationPage = () => {
       throw new Error("Something went wrong!");
     }
 
-    const result = await res.json();
+    router.push(ProjectPageUrls.login);
   };
 
   return (
