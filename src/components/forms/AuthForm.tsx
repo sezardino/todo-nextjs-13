@@ -12,17 +12,22 @@ export interface AuthFormValues {
   password: string;
 }
 
-export interface AuthFormProps extends ComponentPropsWithoutRef<"form"> {}
+export type AuthFormProps = Omit<
+  ComponentPropsWithoutRef<"form">,
+  "onSubmit"
+> & {
+  onSubmit: (values: AuthFormValues) => void;
+};
 
 export const AuthForm: FC<AuthFormProps> = (props) => {
-  const { className, ...rest } = props;
+  const { onSubmit, className, ...rest } = props;
 
   const formik = useFormik<AuthFormValues>({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: () => {},
+    onSubmit,
   });
 
   return (

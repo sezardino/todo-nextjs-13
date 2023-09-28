@@ -1,14 +1,18 @@
-import { type ComponentPropsWithoutRef, type FC } from "react";
-import { AuthForm } from "../forms/AuthForm";
+"use client";
 
-export interface AuthTemplateProps extends ComponentPropsWithoutRef<"div"> {}
+import { type ComponentPropsWithoutRef, type FC } from "react";
+import { AuthForm, AuthFormProps } from "../forms/AuthForm";
+
+export type AuthTemplateProps = ComponentPropsWithoutRef<"div"> & {
+  onSignIn: AuthFormProps["onSubmit"];
+};
 
 export const AuthTemplate: FC<AuthTemplateProps> = (props) => {
-  const { className, ...rest } = props;
+  const { onSignIn, className, ...rest } = props;
 
   return (
     <section {...rest} className={className}>
-      <AuthForm />
+      <AuthForm onSubmit={onSignIn} />
     </section>
   );
 };
