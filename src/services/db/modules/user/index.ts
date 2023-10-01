@@ -107,4 +107,20 @@ export class UserDBModule extends AbstractDBModule {
       data: { password: await passwordService.hash(newPassword) },
     });
   }
+
+  getSettings(userId: string) {
+    return this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        bio: true,
+        email: true,
+        image: true,
+        localization: true,
+        login: true,
+        name: true,
+        socials: true,
+        status: true,
+      },
+    });
+  }
 }

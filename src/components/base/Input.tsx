@@ -7,10 +7,12 @@ export interface BaseInputProps
     "variant" | "labelPlacement" | "radius" | "colors"
   > {}
 
-export const BaseInput: FC<InputProps> = (props) => {
-  const { ...rest } = props;
-
-  return (
-    <Input {...rest} variant="bordered" labelPlacement="outside" radius="sm" />
-  );
-};
+export const BaseInput: FC<InputProps> = (props) => (
+  <Input
+    {...props}
+    placeholder={props.placeholder || " "}
+    variant="bordered"
+    labelPlacement="outside"
+    radius="sm"
+  />
+);
