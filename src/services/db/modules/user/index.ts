@@ -10,7 +10,7 @@ import {
   FindOneUserFoundDto,
   FindOneUserNotFoundDto,
   UpdatePasswordDto,
-  UpdateUserDataDto,
+  UpdateUserSettingsDto,
 } from "./types";
 
 export class UserDBModule extends AbstractDBModule {
@@ -48,7 +48,7 @@ export class UserDBModule extends AbstractDBModule {
     return user;
   }
 
-  async updateData(dto: UpdateUserDataDto): Promise<User | DBModuleError> {
+  async updateData(dto: UpdateUserSettingsDto): Promise<User | DBModuleError> {
     const { login, bio, email, image, localization, name, socials } = dto;
 
     const toUpdate: Record<string, any> = {

@@ -1,3 +1,5 @@
+import { User } from "@prisma/client";
+
 export type FindOneUserBaseDto = {
   login: string;
 };
@@ -28,7 +30,7 @@ export type UpdatePasswordDto = {
   newPassword: string;
 };
 
-export type UpdateUserDataDto = {
+export type UpdateUserSettingsDto = {
   login: string;
   image?: string;
   bio?: string;
@@ -41,3 +43,20 @@ export type UpdateUserDataDto = {
 export type DeleteUserDto = {
   login: string;
 };
+
+export type UpdateUserSettingsRequest = Pick<
+  UpdateUserSettingsDto,
+  "bio" | "email" | "image" | "localization" | "name" | "socials"
+>;
+
+export type UserSettingsResponse = Pick<
+  User,
+  | "bio"
+  | "email"
+  | "image"
+  | "localization"
+  | "login"
+  | "name"
+  | "socials"
+  | "status"
+>;

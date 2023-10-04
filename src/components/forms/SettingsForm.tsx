@@ -11,35 +11,39 @@ import { FormikInput } from "../fields/FormikInput";
 import { FormikTextarea } from "../fields/FormikTextarea";
 
 export interface SettingsFormValues {
-  bio: string;
-  image: string;
-  name: string;
-  email: string;
-  location: string;
+  login?: string;
+  bio?: string;
+  image?: string;
+  name?: string;
+  email?: string;
+  location?: string;
+  socials?: string[];
 }
 
 export interface SettingsFormProps extends ComponentPropsWithoutRef<"form"> {
+  initialValues?: Partial<SettingsFormValues>;
   onFormSubmit: (values: SettingsFormValues) => void;
 }
 
 export const SettingsForm: FC<SettingsFormProps> = (props) => {
-  const { onFormSubmit, className, ...rest } = props;
+  const { initialValues, onFormSubmit, className, ...rest } = props;
 
   const formik = useFormik<SettingsFormValues>({
     initialValues: {
-      bio: "",
-      image: "",
-      name: "",
-      email: "",
-      location: "",
+      login: initialValues?.login || undefined,
+      bio: initialValues?.bio || undefined,
+      image: initialValues?.image || undefined,
+      name: initialValues?.name || undefined,
+      email: initialValues?.email || undefined,
+      location: initialValues?.location || undefined,
     },
     validationSchema: toFormikValidationSchema(
       z.object({
-        bio: z.string(),
-        image: z.string(),
-        name: z.string(),
-        email: z.string().email(),
-        location: z.string(),
+        bio: z.string().optional(),
+        image: z.string().optional(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        location: z.string().optional(),
       })
     ),
     onSubmit: onFormSubmit,
@@ -48,6 +52,7 @@ export const SettingsForm: FC<SettingsFormProps> = (props) => {
   return (
     <FormikProvider value={formik}>
       <Form {...rest} className={twMerge(className)}>
+        {JSON.stringify(formik.errors)}
         <div className="space-y-12">
           <figcaption className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -58,7 +63,12 @@ export const SettingsForm: FC<SettingsFormProps> = (props) => {
               share.
             </p>
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8">
-              <BaseInput label="Login" readOnly isReadOnly value={"login"} />
+              <BaseInput
+                label="Login"
+                readOnly
+                isReadOnly
+                value={formik.values.login}
+              />
               <FormikTextarea name="bio" label="Bio" />
               <FormikInput name="image" label="Avatar Url" />
             </div>

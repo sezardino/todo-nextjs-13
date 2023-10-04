@@ -7,7 +7,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
 
 export const getNextAuthOptions = (
-  authorize: CredentialsConfig["authorize"]
+  authorize?: CredentialsConfig["authorize"]
 ): NextAuthOptions => ({
   adapter: PrismaAdapter(prisma),
   debug: process.env.NODE_ENV === "development",
@@ -53,7 +53,7 @@ export const getNextAuthOptions = (
           placeholder: String.fromCharCode(9679).repeat(10),
         },
       },
-      authorize,
+      authorize: authorize || (() => null),
     }),
   ],
 });

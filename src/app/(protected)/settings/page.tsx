@@ -1,24 +1,35 @@
 "use client";
 
 import { SettingsTemplate } from "@/components/templates/SettingsTemplate";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useUpdateSettingsMutation } from "@/libs/react-query/hooks/mutation/settings";
+import { useSettingsQUery } from "@/libs/react-query/hooks/query/settings";
 
 const SettingsPage = () => {
-  const session = useSession();
+  const { data: settingsData, isLoading: isSettingsLoading } =
+    useSettingsQUery();
 
-  console.log(session.data?.user.id);
+  const { mutateAsync: updateSettings, isLoading: isUpdateSettingsLoading } =
+    useUpdateSettingsMutation();
 
-  useEffect(() => {
-    const getSettings = async () => {
-      const settings = await fetch("/api/users/settings");
-      console.log(await settings.json());
-    };
-
-    getSettings();
-  }, []);
-
-  return <SettingsTemplate />;
+  return (
+    <>
+      {settingsData && (
+        <SettingsTemplate
+          onUpdateSettings={(valuse) =>
+            updateSettings({
+              bio: valuse.bio,
+              image: valuse.image,
+              localization: valuse.location,
+              name: valuse.name,
+              email: valuse.email,
+              socials: valuse.socials,
+            })
+          }
+          settings={settingsData.body}
+        />
+      )}
+    </>
+  );
 };
 
 export default SettingsPage;
