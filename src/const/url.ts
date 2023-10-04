@@ -7,6 +7,7 @@ export const ProjectPageUrls = {
   // protected
 
   dashboard: "/dashboard",
+  settings: "/settings",
 };
 
 export const ProjectApiUrls = {

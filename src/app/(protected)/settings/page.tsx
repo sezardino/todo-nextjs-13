@@ -1,5 +1,6 @@
 "use client";
 
+import { SettingsTemplate } from "@/components/templates/SettingsTemplate";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
@@ -17,9 +18,7 @@ const SettingsPage = () => {
     getSettings();
   }, []);
 
-  // return <SettingsTemplate />;
-  return null;
-  // return <>{JSON.stringify(settings)}</>;
+  return <SettingsTemplate />;
 };
 
 export default SettingsPage;

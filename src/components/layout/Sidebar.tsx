@@ -13,25 +13,31 @@ export type SidebarItem = {
 };
 
 export type SidebarProps = ComponentPropsWithoutRef<"aside"> & {
-  isOpen: boolean;
   lists: SidebarItem[][];
 };
 
 export const Sidebar: FC<SidebarProps> = (props) => {
   const { lists, className, ...rest } = props;
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleExpanded = () => setIsExpanded((prev) => !prev);
+  const toggleOpen = () => setIsOpen((prev) => !prev);
 
   return (
     <aside
       {...rest}
       className={twMerge(
-        "relative h-screen pt-14 transition-transform -translate-x-full border-r md:translate-x-0 bg-gray-800",
+        "relative h-screen flex flex-col transition-transform md:translate-x-0 bg-gray-800 z-50",
+        isOpen && "translate-x-0",
+        !isOpen && "-translate-x-full",
         className
       )}
       aria-label="Sidenav"
     >
+      <div className="flex justify-center px-4 pt-6 pb-0 ">
+        <Icon name="HiBeaker" size={32} className="text-white" />
+      </div>
       <div className="overflow-y-auto py-5 px-3 h-full">
         {lists.map((items, index) => (
           <ul
@@ -47,10 +53,18 @@ export const Sidebar: FC<SidebarProps> = (props) => {
                 <Link
                   href={item.to}
                   className="flex items-center p-2 text-base font-medium text-white rounded-lg hover:bg-gray-500 group"
-                  onClick={item.onClick}
+                  onClick={() => {
+                    setIsOpen(false);
+                    item.onClick;
+                  }}
                 >
                   <Icon name={item.icon} />
-                  <span className={twMerge("ml-3", isExpanded && "sr-only")}>
+                  <span
+                    className={twMerge(
+                      "ml-3",
+                      isExpanded && !isOpen && "sr-only"
+                    )}
+                  >
                     {item.label}
                   </span>
                 </Link>
@@ -61,13 +75,21 @@ export const Sidebar: FC<SidebarProps> = (props) => {
       </div>
       <button
         type="button"
-        className="absolute bottom-7 right-0 translate-x-1/2 z-10 text-white border rounded-full p-1 bg-gray-800"
+        className="absolute bottom-7 right-0 translate-x-1/2 z-10 text-white border rounded-full p-1 bg-gray-800 max-md:hidden"
         onClick={toggleExpanded}
       >
         <Icon
           name={isExpanded ? "HiChevronDoubleRight" : "HiChevronDoubleLeft"}
           size={14}
         />
+      </button>
+
+      <button
+        type="button"
+        className="absolute bottom-7 left-full translate-x-3 z-10 text-white border rounded-full p-2 bg-gray-800 md:hidden"
+        onClick={toggleOpen}
+      >
+        <Icon name={!isOpen ? "HiMenu" : "HiOutlineXCircle"} size={24} />
       </button>
     </aside>
   );
