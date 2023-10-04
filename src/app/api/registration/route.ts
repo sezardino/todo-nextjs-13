@@ -37,6 +37,6 @@ export const POST = async (req: Request) => {
       { status: 201 }
     );
   } catch (error) {
-    return NextResponse.json({ error }, { status: 400 });
+    return NextResponse.json({ error: "Prisma" }, { status: 400 });
   }
 };

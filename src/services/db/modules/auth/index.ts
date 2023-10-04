@@ -1,6 +1,6 @@
 import { passwordService } from "@/services/password";
 import { PrismaClient, User } from "@prisma/client";
-import { DBModuleError } from "../../types";
+import { DBModuleError, isDBModuleError } from "../../types";
 import { AbstractDBModule } from "../abstract";
 import { UserDBModule } from "../user";
 import { LoginDto, RegistrationDto } from "./types";
@@ -29,22 +29,22 @@ export class AuthDBModule extends AbstractDBModule {
 
   async login(dto: LoginDto): Promise<User | DBModuleError> {
     const { login, password } = dto;
-    const user = await this.userModule.findOne({
+    const findResponse = await this.userModule.findOne({
       login,
       throwIfNotFound: true,
     });
 
-    if (typeof user === "string" || !user) {
+    if (isDBModuleError(findResponse) || !findResponse) {
       return { code: 400, message: "Wrong Credentials" };
     }
 
     const isPasswordMatch = await passwordService.compare(
       password,
-      user.password
+      findResponse.password
     );
 
     if (!isPasswordMatch) return { code: 400, message: "Wrong Credentials" };
 
-    return user;
+    return findResponse;
   }
 }

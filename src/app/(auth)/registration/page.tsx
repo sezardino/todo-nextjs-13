@@ -2,27 +2,27 @@
 
 import { AuthFormValues } from "@/components/forms/AuthForm";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
+import { ProjectPageUrls } from "@/const/url";
+import { useRouter } from "next/navigation";
+import { registrationHandler } from "./handlers";
 
 const RegistrationPage = () => {
-  const registrationHandler = async (data: AuthFormValues) => {
-    const res = await fetch("/api/auth/registration", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" },
-    });
+  const router = useRouter();
 
-    if (!res.ok) {
-      throw new Error("Something went wrong!");
+  const registration = async (data: AuthFormValues) => {
+    try {
+      await registrationHandler(data);
+      router.push(ProjectPageUrls.login);
+    } catch (error) {
+      console.log(error);
     }
-
-    const result = await res.json();
   };
 
   return (
     <>
       <AuthTemplate
         title="Sign Up"
-        onFormSubmit={registrationHandler}
+        onFormSubmit={registration}
         type="registration"
       />
     </>

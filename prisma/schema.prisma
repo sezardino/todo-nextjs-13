@@ -43,13 +43,22 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  name     String?
-  email    String? @unique
-  login    String  @unique
-  password String
+  name         String?
+  email        String?    @unique
+  login        String     @unique
+  password     String
+  bio          String?
+  status       UserStatus @default(ACTIVE)
+  socials      String[]   @default([])
+  localization String?
 
   emailVerified DateTime?
   image         String?
@@ -69,4 +78,18 @@ model VerificationRequest {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
+}
+
+model Todo {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  title       String
+  description String?
+  completed   Boolean @default(false)
+  children    Todo[]  @relation("parent")
+  parent      Todo?   @relation("parent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId    String? @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

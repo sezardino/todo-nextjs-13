@@ -2,20 +2,17 @@
 
 import { AuthFormValues } from "@/components/forms/AuthForm";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
-import { signIn } from "next-auth/react";
+import { signInHandler } from "./handlers";
 
 const AuthPage = () => {
-  const signInHandler = async (values: AuthFormValues) => {
-    signIn("credentials", {
-      ...values,
-      callbackUrl: "/",
-      redirect: true,
-    });
+  const signIn = async (values: AuthFormValues) => {
+    console.log(values);
+    signInHandler(values);
   };
 
   return (
     <>
-      <AuthTemplate title="Sign In" type="login" onFormSubmit={signInHandler} />
+      <AuthTemplate title="Sign In" type="login" onFormSubmit={signIn} />
     </>
   );
 };
