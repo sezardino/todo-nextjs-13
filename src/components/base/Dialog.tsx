@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { ReactNode, type FC } from "react";
 
 import {
   Modal,
@@ -9,12 +9,12 @@ import {
   ModalProps,
 } from "@nextui-org/react";
 
-export interface DialogProps extends ModalProps {
+export interface DialogProps extends Omit<ModalProps, "children"> {
   isOpen: boolean;
   onClose: () => void;
-  header?: JSX.Element;
-  body?: JSX.Element;
-  footer?: JSX.Element;
+  header?: ReactNode;
+  body?: ReactNode;
+  footer?: ReactNode;
 }
 
 export const Dialog: FC<DialogProps> = (props) => {
@@ -31,7 +31,7 @@ export const Dialog: FC<DialogProps> = (props) => {
               </ModalHeader>
             )}
             {body && <ModalBody>{body}</ModalBody>}
-            {footer && <ModalFooter>{footer}</ModalFooter>}
+            {footer && <ModalFooter className="block">{footer}</ModalFooter>}
           </>
         )}
       </ModalContent>

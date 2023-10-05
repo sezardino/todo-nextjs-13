@@ -2,10 +2,12 @@
 
 import { type ComponentPropsWithoutRef, type FC } from "react";
 
+import { Button } from "@nextui-org/react";
 import { Form, FormikProvider, useFormik } from "formik";
 import { twMerge } from "tailwind-merge";
 import z from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { Icon } from "../base/Icon";
 import { BaseInput } from "../base/Input";
 import { FormikInput } from "../fields/FormikInput";
 import { FormikTextarea } from "../fields/FormikTextarea";
@@ -36,6 +38,7 @@ export const SettingsForm: FC<SettingsFormProps> = (props) => {
       name: initialValues?.name || undefined,
       email: initialValues?.email || undefined,
       location: initialValues?.location || undefined,
+      socials: initialValues?.socials || [""],
     },
     validationSchema: toFormikValidationSchema(
       z.object({
@@ -44,15 +47,21 @@ export const SettingsForm: FC<SettingsFormProps> = (props) => {
         name: z.string().optional(),
         email: z.string().email().optional(),
         location: z.string().optional(),
+        socials: z.array(z.string().optional()).optional(),
       })
     ),
     onSubmit: onFormSubmit,
   });
 
+  const addEmptySocial = () => {
+    const socials = formik.values.socials || [];
+
+    formik.setFieldValue("socials", [...socials, ""]);
+  };
+
   return (
     <FormikProvider value={formik}>
       <Form {...rest} className={twMerge(className)}>
-        {JSON.stringify(formik.errors)}
         <div className="space-y-12">
           <figcaption className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -86,6 +95,29 @@ export const SettingsForm: FC<SettingsFormProps> = (props) => {
               <FormikInput name="name" label="Name" />
               <FormikInput name="email" label="Email" />
               <FormikInput name="location" label="Location" />
+            </div>
+          </figcaption>
+          <figcaption className="border-b border-gray-900/10 pb-12">
+            <h2 className="text-base font-semibold leading-7 text-gray-900">
+              Socials
+            </h2>
+
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8">
+              {formik.values.socials?.map((_, index) => (
+                <FormikInput
+                  key={index}
+                  name={`socials.${index}`}
+                  label={`Social ${index + 1}`}
+                />
+              ))}
+              <Button
+                isIconOnly
+                className="mx-auto"
+                onClick={addEmptySocial}
+                aria-label="add new social"
+              >
+                <Icon name="HiPlusCircle" />
+              </Button>
             </div>
           </figcaption>
         </div>
