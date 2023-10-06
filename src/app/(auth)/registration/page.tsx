@@ -3,11 +3,12 @@
 import { AuthFormValues } from "@/components/forms/AuthForm";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
 import { ProjectPageUrls } from "@/const/url";
+import { useRegistrationMutation } from "@/libs/react-query/hooks/mutation/registration";
 import { useRouter } from "next/navigation";
-import { registrationHandler } from "./handlers";
 
 const RegistrationPage = () => {
   const router = useRouter();
+  const { mutateAsync: registrationHandler } = useRegistrationMutation();
 
   const registration = async (data: AuthFormValues) => {
     try {

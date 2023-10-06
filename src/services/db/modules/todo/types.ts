@@ -28,7 +28,7 @@ export type SetTodoCompleteDto = {
 };
 
 export type SetTodoVisibilityDto = {
-  userTodoId: string;
+  userId: string;
   hidden: boolean;
   todoId: string;
 };

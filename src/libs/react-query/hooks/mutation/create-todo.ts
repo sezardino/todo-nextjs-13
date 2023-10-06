@@ -1,17 +1,17 @@
+import { CreateTodoBody } from "@/app/api/todo/schema";
 import { ProjectApiUrls } from "@/const/url";
-import { UpdateUserSettingsRequest } from "@/services/db/modules/user/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-const handler = async (data: UpdateUserSettingsRequest) => {
+const handler = async (data: CreateTodoBody) => {
   return axios({
-    url: ProjectApiUrls.settings,
+    url: ProjectApiUrls.createTodo,
     method: "POST",
     data: JSON.stringify(data),
-  });
+  }).then((res) => res.data);
 };
 
-export const useUpdateSettingsMutation = () => {
+export const useCreateTodoMutation = () => {
   return useMutation({
     mutationFn: handler,
   });

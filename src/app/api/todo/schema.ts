@@ -7,8 +7,8 @@ export const createTodoValidationSchema = z.object({
 export type CreateTodoBody = z.infer<typeof createTodoValidationSchema>;
 
 export const todoListValidationSchema = z.object({
-  limit: z.number().optional(),
-  page: z.number().optional(),
+  limit: z.preprocess((val) => Number(val), z.number().optional()),
+  page: z.preprocess((val) => Number(val), z.number().optional()),
   search: z.string().optional(),
   completed: z.boolean().optional(),
   hidden: z.boolean().optional(),

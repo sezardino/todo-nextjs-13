@@ -17,6 +17,7 @@ export class TodoDBModule extends AbstractDBModule {
     try {
       return await this.prismaService.todo.findUniqueOrThrow({
         where: { id: dto.todoId, userId: dto.userId },
+        include: { children: true, parent: true },
       });
     } catch (error) {
       return { code: 404, message: "Todo not found" };
@@ -67,7 +68,7 @@ export class TodoDBModule extends AbstractDBModule {
 
   async setVisibility(dto: SetTodoVisibilityDto) {
     return await this.prismaService.todo.update({
-      where: { id: dto.todoId, userId: dto.userTodoId },
+      where: { id: dto.todoId, userId: dto.userId },
       data: { hidden: dto.hidden },
     });
   }
@@ -94,6 +95,15 @@ export class TodoDBModule extends AbstractDBModule {
       take: limit,
       skip: page && limit ? (page - 1) * limit : undefined,
       orderBy: { createdAt: "desc" },
+      select: {
+        title: true,
+        description: true,
+        hidden: true,
+        completed: true,
+        _count: {
+          select: { children: true },
+        },
+      },
     });
 
     if (search) {
