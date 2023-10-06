@@ -4,6 +4,7 @@ import { AbstractDBModule } from "../abstract";
 import {
   CreateChildTodoDto,
   CreateTodoDto,
+  DeleteTodoDto,
   FindOneTodoDto,
   SetTodoCompleteDto,
   SetTodoVisibilityDto,
@@ -23,11 +24,17 @@ export class TodoDBModule extends AbstractDBModule {
   }
 
   create(dto: CreateTodoDto) {
-    this.prismaService.todo.create({
+    return this.prismaService.todo.create({
       data: {
         title: dto.title,
         user: { connect: { id: dto.userId } },
       },
+    });
+  }
+
+  delete(dto: DeleteTodoDto) {
+    return this.prismaService.todo.delete({
+      where: { id: dto.todoId, userId: dto.userId },
     });
   }
 
@@ -41,8 +48,8 @@ export class TodoDBModule extends AbstractDBModule {
     });
   }
 
-  update(dto: UpdateTodoDto) {
-    this.prismaService.todo.update({
+  async update(dto: UpdateTodoDto) {
+    return await this.prismaService.todo.update({
       where: { id: dto.todoId, userId: dto.userId },
       data: {
         title: dto.title,

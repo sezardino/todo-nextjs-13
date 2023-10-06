@@ -3,6 +3,11 @@ export type CreateTodoDto = {
   title: string;
 };
 
+export type DeleteTodoDto = {
+  userId: string;
+  todoId: string;
+};
+
 export type CreateChildTodoDto = {
   userId: string;
   parentId: string;
@@ -12,8 +17,8 @@ export type CreateChildTodoDto = {
 export type UpdateTodoDto = {
   userId: string;
   todoId: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 };
 
 export type SetTodoCompleteDto = {
