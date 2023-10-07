@@ -7,7 +7,7 @@ export const ProjectPageUrls = {
   // protected
 
   dashboard: "/dashboard",
-  todo: (id: string) => `/todo/${id}`,
+  todo: (id: string) => `/dashboard/${id}`,
   settings: "/settings",
 };
 

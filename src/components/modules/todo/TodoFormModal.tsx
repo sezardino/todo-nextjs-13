@@ -9,10 +9,13 @@ export type TodoFormModalProps = Omit<DialogProps, "children"> & {
 };
 
 export const TodoFormModal: FC<TodoFormModalProps> = (props) => {
-  const { onFormSubmit, initialValues, className, ...rest } = props;
+  const { title, onFormSubmit, initialValues, className, ...rest } = props;
 
   return (
     <Dialog {...rest}>
+      <Dialog.Header>
+        <h2>{title}</h2>
+      </Dialog.Header>
       <Dialog.Body>
         <TodoForm
           initialValues={initialValues}

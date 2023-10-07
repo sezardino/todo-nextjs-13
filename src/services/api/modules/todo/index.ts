@@ -16,7 +16,7 @@ export class TodoApiService extends AbstractApiModule {
   }
 
   async one(id: string): Promise<TodoOneResponse> {
-    return this.fetcher(ProjectApiUrls.todo(id));
+    return this.fetcher<TodoOneResponse>(ProjectApiUrls.todo(id));
   }
 
   async create(data: CreateTodoBody) {

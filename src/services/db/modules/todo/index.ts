@@ -36,7 +36,6 @@ export class TodoDBModule extends AbstractDBModule {
   }
 
   async createChild(dto: CreateChildTodoDto) {
-    console.log(dto);
     try {
       return await this.prismaService.todo.create({
         data: {

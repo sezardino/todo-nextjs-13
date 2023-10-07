@@ -5,10 +5,11 @@ import { TodoListItem } from "./TodoListItem";
 
 export interface ChildrenListProps extends ComponentPropsWithoutRef<"div"> {
   items: Todo[];
+  onChildClick?: (id: string) => void;
 }
 
 export const ChildrenList: FC<ChildrenListProps> = (props) => {
-  const { items, className, ...rest } = props;
+  const { items, onChildClick, className, ...rest } = props;
 
   return (
     <div {...rest} className={className}>
@@ -19,7 +20,7 @@ export const ChildrenList: FC<ChildrenListProps> = (props) => {
               title={child.title}
               isCompleted={child.completed}
               hasDescription={!!child.description}
-              onShowMoreClick={() => undefined}
+              onShowMoreClick={() => onChildClick?.(child.id)}
             />
           </li>
         ))}

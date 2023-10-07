@@ -15,7 +15,7 @@ type SubComponents = {
   Footer: typeof ModalFooter;
 };
 
-type DrawerProps = Omit<
+export type DrawerProps = Omit<
   ModalProps,
   "className" | "fullScreen" | "closeButton" | "animated" | "backdrop"
 >;

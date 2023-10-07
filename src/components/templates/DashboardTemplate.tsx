@@ -1,15 +1,12 @@
-import { ProjectPageUrls } from "@/const/url";
 import {
   TodoListResponse,
   TodoOneResponse,
 } from "@/services/db/modules/todo/types";
 import { Button } from "@nextui-org/react";
 import { useState, type ComponentPropsWithoutRef, type FC } from "react";
-import { Breadcrumbs } from "../base/Breadcrumbs";
-import { Drawer } from "../base/Drawer";
 import { Icon } from "../base/Icon";
 import { TodoFormValues } from "../forms/TodoForm";
-import { TodoDetails } from "../modules/todo/TodoDetails";
+import { TodoDrawer } from "../modules/todo/TodoDrawer";
 import { TodoFormModal } from "../modules/todo/TodoFormModal";
 import { TodoList } from "../modules/todo/TodoList";
 
@@ -86,26 +83,16 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
       />
 
       {todo && (
-        <Drawer isOpen onClose={() => onSelectedTodoChange(null)}>
-          <Drawer.Header>
-            <Breadcrumbs
-              items={[
-                { name: "Dashboard", href: ProjectPageUrls.dashboard },
-                { name: todo.title, href: ProjectPageUrls.todo(todo.id) },
-              ]}
-            />
-          </Drawer.Header>
-          <Drawer.Body>
-            <TodoDetails
-              todo={todo}
-              onCreateChildClick={() =>
-                setTodoModalData({ variant: "child", parentId: todo.id })
-              }
-              onCompleteClick={() => undefined}
-              onVisibilityClick={() => undefined}
-            />
-          </Drawer.Body>
-        </Drawer>
+        <TodoDrawer
+          isOpen
+          todo={todo}
+          onClose={() => onSelectedTodoChange(null)}
+          onCompleteClick={() => undefined}
+          onCreateChildClick={() =>
+            setTodoModalData({ variant: "child", parentId: todo.id })
+          }
+          onVisibilityClick={() => undefined}
+        />
       )}
     </>
   );

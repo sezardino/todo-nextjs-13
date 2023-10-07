@@ -27,7 +27,7 @@ export const TodoForm: FC<TodoFormProps> = (props) => {
 
   return (
     <FormikProvider value={formik}>
-      <Form {...rest} className={twMerge("space-y-2", className)}>
+      <Form {...rest} className={twMerge("space-y-5", className)}>
         <FormikInput name="name" placeholder="Name" />
         <div className="flex gap-3 flex-wrap justify-between items-center">
           <Button type="reset" onClick={onCancelClick}>
