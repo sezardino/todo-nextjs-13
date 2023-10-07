@@ -22,7 +22,7 @@ const DashboardLayout = (props: PropsWithChildren) => {
   const { children } = props;
 
   return (
-    <div className={"antialiased bg-gray-50 dark:bg-gray-900"}>
+    <div className={"min-h-screen antialiased bg-gray-50 dark:bg-gray-900"}>
       <AppNavbar className="fixed left-0 right-0 top-0 z-50" />
 
       <Sidebar lists={lists} className="fixed top-0 left-0" />
