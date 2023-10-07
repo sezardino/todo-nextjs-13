@@ -23,28 +23,23 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = (props) => {
   } = props;
 
   return (
-    <Dialog
-      {...rest}
-      header={
-        <>
-          <h2 className="text-center text-lg font-semibold leading-7 text-gray-900">
-            {title}
-          </h2>
-          {description && (
-            <p className="text-center mt-1 text-sm leading-6 text-gray-600">
-              {description}
-            </p>
-          )}
-        </>
-      }
-      body={children ? children : undefined}
-      footer={
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <Button onClick={cancelButton.onClick}>{cancelButton.label}</Button>
-          <Button onClick={confirmButton.onClick}>{confirmButton.label}</Button>
-        </div>
-      }
-      className={twMerge(className)}
-    />
+    <Dialog {...rest} className={twMerge(className)}>
+      <Dialog.Header className="flex flex-col">
+        <h2 className="text-center text-lg font-semibold leading-7 text-gray-900">
+          {title}
+        </h2>
+        {description && (
+          <p className="text-center mt-1 text-sm leading-6 text-gray-600">
+            {description}
+          </p>
+        )}
+      </Dialog.Header>
+      {!!children && <Dialog.Body>{children}</Dialog.Body>}
+      <Dialog.Footer className="flex items-center justify-between gap-2 flex-wrap">
+        {" "}
+        <Button onClick={cancelButton.onClick}>{cancelButton.label}</Button>
+        <Button onClick={confirmButton.onClick}>{confirmButton.label}</Button>
+      </Dialog.Footer>
+    </Dialog>
   );
 };

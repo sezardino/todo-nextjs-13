@@ -1,4 +1,4 @@
-import { ReactNode, type FC } from "react";
+import { type FC } from "react";
 
 import {
   Modal,
@@ -9,32 +9,27 @@ import {
   ModalProps,
 } from "@nextui-org/react";
 
-export interface DialogProps extends Omit<ModalProps, "children"> {
+export interface DialogProps extends Omit<ModalProps, "backdrop"> {
   isOpen: boolean;
   onClose: () => void;
-  header?: ReactNode;
-  body?: ReactNode;
-  footer?: ReactNode;
 }
 
-export const Dialog: FC<DialogProps> = (props) => {
-  const { body, header, footer, title, className, ...rest } = props;
+type SubComponents = {
+  Header: typeof ModalHeader;
+  Body: typeof ModalBody;
+  Footer: typeof ModalFooter;
+};
+
+export const Dialog: FC<DialogProps> & SubComponents = (props) => {
+  const { title, className, children, ...rest } = props;
 
   return (
     <Modal {...rest} backdrop="blur">
-      <ModalContent>
-        {(onClose) => (
-          <>
-            {header && (
-              <ModalHeader className="flex flex-col gap-1">
-                {header}
-              </ModalHeader>
-            )}
-            {body && <ModalBody>{body}</ModalBody>}
-            {footer && <ModalFooter className="block">{footer}</ModalFooter>}
-          </>
-        )}
-      </ModalContent>
+      <ModalContent>{children}</ModalContent>
     </Modal>
   );
 };
+
+Dialog.Header = ModalHeader;
+Dialog.Body = ModalBody;
+Dialog.Footer = ModalFooter;
