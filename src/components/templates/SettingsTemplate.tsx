@@ -31,7 +31,6 @@ const checkWhatSettingsWasChanged = (
   const changed: Partial<SettingsFormValues> = {};
   const formattedSettings: SettingsFormValues =
     settingsResponseToFormValues(oldSettings);
-  console.log({ newSettings, oldSettings, formattedSettings });
 
   if (formattedSettings.bio !== newSettings.bio) {
     changed.bio = newSettings.bio;
@@ -59,10 +58,6 @@ const checkWhatSettingsWasChanged = (
   ) {
     changed.socials = newSettings.socials;
   }
-  console.log(
-    JSON.stringify(formattedSettings.socials) !==
-      JSON.stringify(newSettings.socials)
-  );
 
   return changed;
 };

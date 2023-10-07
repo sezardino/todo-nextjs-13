@@ -1,9 +1,13 @@
 import { getNextAuthOptions } from "@/libs/next-auth";
 import { dbService } from "@/services/db";
+import { getNextResponse } from "@/utils/get-next-response";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export const deleteTodo = async (req: NextRequest, context: { id: string }) => {
+export const getOneTodo = async (
+  req: NextRequest,
+  context: { params: { id: string } }
+) => {
   const session = await getServerSession(getNextAuthOptions());
 
   if (!session) {
@@ -11,15 +15,16 @@ export const deleteTodo = async (req: NextRequest, context: { id: string }) => {
   }
 
   try {
+    console.log(context);
     const response = await dbService.todo.findOne({
       userId: session.user.id,
-      todoId: context.id,
+      todoId: context.params.id,
     });
 
     if (!response) return NextResponse.json({ status: 404 });
 
-    return NextResponse.json({ status: 200, body: response });
+    return getNextResponse(response, 200);
   } catch (error) {
-    return NextResponse.json({ status: 204, body: error });
+    return NextResponse.json({ status: 500, body: error });
   }
 };

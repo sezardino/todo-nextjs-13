@@ -20,7 +20,7 @@ export const Dropdown: FC<DropdownProps> = (props) => {
 
   return (
     <Menu {...rest} as="div" className={twMerge("relative", className)}>
-      <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+      <Menu.Button className="relative flex rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
         <>{children}</>
       </Menu.Button>
 

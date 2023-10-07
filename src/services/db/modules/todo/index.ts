@@ -1,6 +1,5 @@
 import { getPagination } from "@/utils/get-pagination";
 import { Prisma, Todo } from "@prisma/client";
-import { DBModuleError } from "../../types";
 import { AbstractDBModule } from "../abstract";
 import {
   CreateChildTodoDto,
@@ -14,15 +13,11 @@ import {
 } from "./types";
 
 export class TodoDBModule extends AbstractDBModule {
-  async findOne(dto: FindOneTodoDto): Promise<Todo | DBModuleError> {
-    try {
-      return await this.prismaService.todo.findUniqueOrThrow({
-        where: { id: dto.todoId, userId: dto.userId },
-        include: { children: true, parent: true },
-      });
-    } catch (error) {
-      return { code: 404, message: "Todo not found" };
-    }
+  async findOne(dto: FindOneTodoDto): Promise<Todo> {
+    return await this.prismaService.todo.findUniqueOrThrow({
+      where: { id: dto.todoId, userId: dto.userId },
+      include: { children: true, parent: true },
+    });
   }
 
   create(dto: CreateTodoDto) {
@@ -101,19 +96,24 @@ export class TodoDBModule extends AbstractDBModule {
       skip,
       orderBy: { createdAt: "desc" },
       select: {
+        id: true,
         title: true,
         hidden: true,
         completed: true,
-        _count: {
-          select: { children: true },
-        },
+        description: true,
+        children: true,
       },
     });
 
-    if (search) {
-      return todo.filter((todo) => todo.title.includes(search));
-    }
+    const mappedTodo = todo.map(({ description, children, ...todo }) => ({
+      ...todo,
+      hasDescription: !!description,
+      children: {
+        total: children.length,
+        completed: children.filter((c) => c.completed).length,
+      },
+    }));
 
-    return { data: todo, meta };
+    return { data: mappedTodo, meta };
   }
 }

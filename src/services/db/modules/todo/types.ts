@@ -1,3 +1,6 @@
+import { Prisma } from "@prisma/client";
+import { TodoDBModule } from ".";
+
 export type CreateTodoDto = {
   userId: string;
   title: string;
@@ -46,3 +49,8 @@ export type TodoListDto = {
   completed?: boolean;
   hidden?: boolean;
 };
+
+export type TodoListResponse = Awaited<ReturnType<TodoDBModule["list"]>>;
+export type TodoOneResponse = Prisma.TodoGetPayload<{
+  include: { children: true; parent: true };
+}>;

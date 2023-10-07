@@ -2,10 +2,7 @@ import { Dialog, DialogProps } from "@/components/base/Dialog";
 import { TodoForm, TodoFormProps } from "@/components/forms/TodoForm";
 import { type FC } from "react";
 
-export type TodoFormModalProps = Omit<
-  DialogProps,
-  "footer" | "header" | "body"
-> & {
+export type TodoFormModalProps = Omit<DialogProps, "children"> & {
   title: string;
   onFormSubmit: TodoFormProps["onFormSubmit"];
   initialValues?: TodoFormProps["initialValues"];

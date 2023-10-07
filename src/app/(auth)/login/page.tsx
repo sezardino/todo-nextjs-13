@@ -6,7 +6,6 @@ import { signInHandler } from "./handlers";
 
 const AuthPage = () => {
   const signIn = async (values: AuthFormValues) => {
-    console.log(values);
     signInHandler(values);
   };
 

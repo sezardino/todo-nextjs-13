@@ -1,20 +1,11 @@
-import { ProjectApiUrls } from "@/const/url";
-import { UserSettingsResponse } from "@/services/db/modules/user/types";
-import { BackendResponse } from "@/types/be";
+import { api } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
-const TODO_QUERY_KEY = "list";
+const TODO_QUERY_KEY = "one";
 
-const handler = async (
-  id: string
-): Promise<BackendResponse<UserSettingsResponse>> => {
-  return axios(ProjectApiUrls.todo(id)).then((res) => res.data);
-};
-
-export const useSettingsQUery = (id: string) =>
+export const useTodoQuery = (id?: string) =>
   useQuery({
     queryKey: [TODO_QUERY_KEY, id],
-    queryFn: () => handler(id),
+    queryFn: () => api.todo.one(id!),
     enabled: !!id,
   });
