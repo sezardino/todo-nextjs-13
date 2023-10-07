@@ -1,40 +1,41 @@
-"use client";
-
 import { Icon } from "@/components/base/Icon";
-import { Card, CardBody, CardProps } from "@nextui-org/react";
-import { type FC } from "react";
+import { Card, CardBody } from "@nextui-org/react";
+import { ComponentPropsWithoutRef, type FC } from "react";
 
-export type TodoCardProps = CardProps & {
+export type TodoListItemProps = ComponentPropsWithoutRef<"button"> & {
   title: string;
-  completedChildren: number;
-  totalChildren: number;
-  hasDescription: boolean;
   isCompleted: boolean;
-  onClick: () => void;
+  hasDescription: boolean;
+  onShowMoreClick: () => void;
 };
 
-export const TodoCard: FC<TodoCardProps> = (props) => {
+export const TodoListItem: FC<TodoListItemProps> = (props) => {
   const {
     title,
-    completedChildren,
-    totalChildren,
-    hasDescription,
     isCompleted,
-    onClick,
+    hasDescription,
+    onShowMoreClick,
     className,
     ...rest
   } = props;
 
   return (
-    <Card {...rest} className="">
-      <CardBody className="justify-between pb-0">
-        <h3 className="text-small font-semibold leading-none text-default-600">
-          {title}
-        </h3>
-        {isCompleted && (
-          <Icon name="HiCheckCircle" className="text-green-500" />
-        )}
-      </CardBody>
-    </Card>
+    <button {...rest} className={className} onClick={onShowMoreClick}>
+      <Card className="rounded-md">
+        <CardBody className="justify-between p-3">
+          <h3 className="text-small font-semibold leading-none text-default-600">
+            {title}
+          </h3>
+          <div>
+            {hasDescription && (
+              <Icon name="HiMenuAlt2" className="text-default-400" />
+            )}
+            {isCompleted && (
+              <Icon name="HiCheckCircle" className="text-green-500" />
+            )}
+          </div>
+        </CardBody>
+      </Card>
+    </button>
   );
 };

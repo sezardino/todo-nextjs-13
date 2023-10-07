@@ -5,14 +5,13 @@ import {
 } from "@/services/db/modules/todo/types";
 import { Button } from "@nextui-org/react";
 import { useState, type ComponentPropsWithoutRef, type FC } from "react";
-import { twMerge } from "tailwind-merge";
 import { Breadcrumbs } from "../base/Breadcrumbs";
 import { Drawer } from "../base/Drawer";
 import { Icon } from "../base/Icon";
 import { TodoFormValues } from "../forms/TodoForm";
-import { TodoCard } from "../modules/todo/TodoCard";
 import { TodoDetails } from "../modules/todo/TodoDetails";
 import { TodoFormModal } from "../modules/todo/TodoFormModal";
+import { TodoList } from "../modules/todo/TodoList";
 
 export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   list?: TodoListResponse;
@@ -46,19 +45,13 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
           </Button>
         </header>
 
-        <ul className={twMerge("grid grid-cols-2 gap-5")}>
-          {list?.data.map((todo) => (
-            <TodoCard
-              key={todo.id}
-              completedChildren={todo.children.completed}
-              totalChildren={todo.children.total}
-              hasDescription={todo.hasDescription}
-              isCompleted={todo.completed}
-              title={todo.title}
-              onShowMoreClick={() => onSelectedTodoChange(todo.id)}
-            />
-          ))}
-        </ul>
+        {!!list?.data.length && (
+          <TodoList
+            list={list}
+            className="mt-8"
+            onMoreButtonClick={onSelectedTodoChange}
+          />
+        )}
       </section>
 
       <TodoFormModal
@@ -74,13 +67,14 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
             <Breadcrumbs
               items={[
                 { name: "Dashboard", href: ProjectPageUrls.dashboard },
-                { name: todo.title, href: ProjectPageUrls.todo("123") },
+                { name: todo.title, href: ProjectPageUrls.todo(todo.id) },
               ]}
             />
           </Drawer.Header>
           <Drawer.Body>
             <TodoDetails
               todo={todo}
+              onCreateChildClick={() => undefined}
               onCompleteClick={() => undefined}
               onVisibilityClick={() => undefined}
             />
