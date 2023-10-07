@@ -1,6 +1,7 @@
 import { Icon } from "@/components/base/Icon";
 import { Card, CardBody } from "@nextui-org/react";
 import { ComponentPropsWithoutRef, type FC } from "react";
+import { twMerge } from "tailwind-merge";
 
 export type TodoListItemProps = ComponentPropsWithoutRef<"button"> & {
   title: string;
@@ -20,7 +21,11 @@ export const TodoListItem: FC<TodoListItemProps> = (props) => {
   } = props;
 
   return (
-    <button {...rest} className={className} onClick={onShowMoreClick}>
+    <button
+      {...rest}
+      className={twMerge("w-full", className)}
+      onClick={onShowMoreClick}
+    >
       <Card className="rounded-md">
         <CardBody className="justify-between p-3">
           <h3 className="text-small font-semibold leading-none text-default-600">

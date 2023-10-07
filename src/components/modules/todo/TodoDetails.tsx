@@ -4,6 +4,7 @@ import { TodoOneResponse } from "@/services/db/modules/todo/types";
 import { Button } from "@nextui-org/react";
 import { type ComponentPropsWithoutRef, type FC } from "react";
 import { twMerge } from "tailwind-merge";
+import { ChildrenList } from "./ChildrenList";
 
 export type TodoDetailsProps = ComponentPropsWithoutRef<"section"> & {
   todo: TodoOneResponse;
@@ -54,13 +55,7 @@ export const TodoDetails: FC<TodoDetailsProps> = (props) => {
         </p>
       </div>
 
-      {!!todo.children.length && (
-        <ul className="mt-5">
-          {todo.children.map((child) => (
-            <li key={child.id}>{child.title}</li>
-          ))}
-        </ul>
-      )}
+      {!!todo.children.length && <ChildrenList items={todo.children} />}
     </section>
   );
 };

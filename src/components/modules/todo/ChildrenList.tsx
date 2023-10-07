@@ -12,7 +12,7 @@ export const ChildrenList: FC<ChildrenListProps> = (props) => {
 
   return (
     <div {...rest} className={className}>
-      <ul className="mt-5">
+      <ul className="mt-5 grid grid-cols-1 gap-1">
         {items.map((child) => (
           <li key={child.id}>
             <TodoListItem

@@ -1,4 +1,5 @@
-import { TodoListBody } from "@/app/api/todo/schema";
+import { CreateChildTodoBody } from "@/app/api/todo/[id]/child/schema";
+import { CreateTodoBody, TodoListBody } from "@/app/api/todo/schema";
 import { ProjectApiUrls } from "@/const/url";
 import {
   TodoListResponse,
@@ -16,5 +17,16 @@ export class TodoApiService extends AbstractApiModule {
 
   async one(id: string): Promise<TodoOneResponse> {
     return this.fetcher(ProjectApiUrls.todo(id));
+  }
+
+  async create(data: CreateTodoBody) {
+    return this.fetcher(ProjectApiUrls.createTodo, { method: "POST", data });
+  }
+
+  async createChild(data: CreateChildTodoBody) {
+    return this.fetcher(ProjectApiUrls.todoChild(data.parentId), {
+      method: "POST",
+      data,
+    });
   }
 }

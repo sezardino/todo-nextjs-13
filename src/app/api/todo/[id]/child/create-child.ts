@@ -1,12 +1,13 @@
 import { getNextAuthOptions } from "@/libs/next-auth";
 import { dbService } from "@/services/db";
+import { getNextResponse } from "@/utils/get-next-response";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { createChildTodoValidationSchema } from "./schema";
 
 export const createChildTodo = async (
   req: NextRequest,
-  context: { id: string }
+  context: { params: { id: string } }
 ) => {
   const session = await getServerSession(getNextAuthOptions());
 
@@ -28,23 +29,15 @@ export const createChildTodo = async (
   try {
     const response = await dbService.todo.createChild({
       userId: session.user.id,
-      parentId: context.id,
+      parentId: context.params.id,
       title: validation.data.title,
     });
 
-    // TODO: add error when 404
-    // if ("code" in response) {
-    //   return NextResponse.json(
-    //     { message: response.message },
-    //     { status: response.code }
-    //   );
-    // }
+    if (!response)
+      return NextResponse.json({ error: "Prisma" }, { status: 500 });
 
-    return NextResponse.json(
-      { message: "Data Updated", user: response },
-      { status: 200 }
-    );
+    return getNextResponse({ ...response }, 201);
   } catch (error) {
-    return NextResponse.json({ error: "Prisma" }, { status: 400 });
+    return NextResponse.json({ error: "Prisma" }, { status: 500 });
   }
 };

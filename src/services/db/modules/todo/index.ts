@@ -35,14 +35,19 @@ export class TodoDBModule extends AbstractDBModule {
     });
   }
 
-  createChild(dto: CreateChildTodoDto) {
-    this.prismaService.todo.create({
-      data: {
-        title: dto.title,
-        parent: { connect: { id: dto.parentId } },
-        user: { connect: { id: dto.userId } },
-      },
-    });
+  async createChild(dto: CreateChildTodoDto) {
+    console.log(dto);
+    try {
+      return await this.prismaService.todo.create({
+        data: {
+          title: dto.title,
+          parent: { connect: { id: dto.parentId } },
+          user: { connect: { id: dto.userId } },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async update(dto: UpdateTodoDto) {
