@@ -1,17 +1,8 @@
-import { ProjectApiUrls } from "@/const/url";
-import { RegistrationDto } from "@/services/db/modules/auth/types";
+import { RegistrationBody } from "@/app/api/registration/schema";
+import { api } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-
-const handler = async (data: RegistrationDto) => {
-  return await axios({
-    url: ProjectApiUrls.registration,
-    method: "POST",
-    data,
-  }).then((res) => res.data);
-};
 
 export const useRegistrationMutation = () =>
   useMutation({
-    mutationFn: handler,
+    mutationFn: (data: RegistrationBody) => api.auth.registration(data),
   });
