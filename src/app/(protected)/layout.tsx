@@ -3,6 +3,9 @@ import { Sidebar, SidebarItem } from "@/components/layout/Sidebar";
 import { ProjectPageUrls } from "@/const/url";
 import { PropsWithChildren } from "react";
 
+import { twMerge } from "tailwind-merge";
+import styles from "./layout.module.css";
+
 const lists: SidebarItem[][] = [
   [
     {
@@ -22,11 +25,22 @@ const DashboardLayout = (props: PropsWithChildren) => {
   const { children } = props;
 
   return (
-    <div className={"min-h-screen antialiased bg-gray-50 dark:bg-gray-900"}>
-      <AppNavbar className="fixed left-0 right-0 top-0 z-50" />
+    <div
+      className={twMerge(
+        styles.element,
+        "min-h-screen antialiased bg-gray-50 dark:bg-gray-900"
+      )}
+    >
+      <AppNavbar className={styles.navbar} />
 
-      <Sidebar lists={lists} className="fixed top-0 left-0" />
-      <main className="p-4 md:ml-64 h-auto pt-20">{children}</main>
+      <Sidebar
+        lists={lists}
+        className={twMerge(
+          styles.sidebar,
+          "max-md:fixed max-md:top-0 max-md:left-0"
+        )}
+      />
+      <main className={twMerge(styles.content, "p-4 h-auto")}>{children}</main>
     </div>
   );
 };

@@ -1,0 +1,25 @@
+.element {
+}
+
+.navbar {
+  grid-area: navbar;
+}
+
+.sidebar {
+  grid-area: sidebar;
+}
+
+.content {
+  grid-area: content;
+}
+
+@media screen and (min-width: 768px) {
+  .element {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "sidebar navbar"
+      "sidebar content";
+  }
+}

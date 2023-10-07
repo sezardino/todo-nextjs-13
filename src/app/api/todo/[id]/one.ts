@@ -15,7 +15,6 @@ export const getOneTodo = async (
   }
 
   try {
-    console.log(context);
     const response = await dbService.todo.findOne({
       userId: session.user.id,
       todoId: context.params.id,
