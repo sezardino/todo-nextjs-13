@@ -1,12 +1,12 @@
 "use client";
 
 import { SettingsTemplate } from "@/components/templates/SettingsTemplate";
-import { useUpdateSettingsMutation } from "@/libs/react-query/hooks/mutation/settings";
-import { useSettingsQUery } from "@/libs/react-query/hooks/query/settings";
+import { useUpdateSettingsMutation } from "@/libs/react-query/hooks/mutation/update-settings";
+import { useSettingsQuery } from "@/libs/react-query/hooks/query/settings";
 
 const SettingsPage = () => {
   const { data: settingsData, isLoading: isSettingsLoading } =
-    useSettingsQUery();
+    useSettingsQuery();
 
   const { mutateAsync: updateSettings, isLoading: isUpdateSettingsLoading } =
     useUpdateSettingsMutation();
@@ -25,7 +25,7 @@ const SettingsPage = () => {
               socials: valuse.socials,
             })
           }
-          settings={settingsData.body}
+          settings={settingsData}
         />
       )}
     </>
