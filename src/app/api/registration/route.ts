@@ -1,16 +1,11 @@
 import { dbService } from "@/services/db";
 import { NextResponse } from "next/server";
-import { z } from "zod";
-
-const validationSchema = z.object({
-  login: z.string(),
-  password: z.string(),
-});
+import { registrationValidationSchema } from "./schema";
 
 export const POST = async (req: Request) => {
   const body = await req.json();
 
-  const validation = validationSchema.safeParse(body);
+  const validation = registrationValidationSchema.safeParse(body);
 
   if (!validation.success) {
     return NextResponse.json(

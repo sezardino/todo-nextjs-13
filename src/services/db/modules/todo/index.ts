@@ -1,3 +1,4 @@
+import { getPagination } from "@/utils/get-pagination";
 import { Prisma, Todo } from "@prisma/client";
 import { DBModuleError } from "../../types";
 import { AbstractDBModule } from "../abstract";
@@ -90,14 +91,17 @@ export class TodoDBModule extends AbstractDBModule {
       where.title = { contains: search };
     }
 
+    const count = await this.prismaService.todo.count({ where });
+
+    const { skip, take, meta } = getPagination(page, limit, count);
+
     const todo = await this.prismaService.todo.findMany({
       where,
-      take: limit,
-      skip: page && limit ? (page - 1) * limit : undefined,
+      take,
+      skip,
       orderBy: { createdAt: "desc" },
       select: {
         title: true,
-        description: true,
         hidden: true,
         completed: true,
         _count: {
@@ -110,6 +114,6 @@ export class TodoDBModule extends AbstractDBModule {
       return todo.filter((todo) => todo.title.includes(search));
     }
 
-    return todo;
+    return { data: todo, meta };
   }
 }

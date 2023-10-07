@@ -21,7 +21,10 @@ export const todoList = async (req: NextRequest) => {
   const validation = todoListValidationSchema.safeParse(params);
 
   if (!validation.success)
-    return NextResponse.json({ status: 400, errors: validation.error.errors });
+    return NextResponse.json(
+      { errors: validation.error.errors },
+      { status: 400 }
+    );
 
   try {
     const response = await dbService.todo.list({
@@ -29,10 +32,10 @@ export const todoList = async (req: NextRequest) => {
       ...validation.data,
     });
 
-    if (!response) return NextResponse.json({ status: 404 });
+    if (!response) return NextResponse.json({}, { status: 404 });
 
-    return NextResponse.json({ status: 200, todo: response });
+    return NextResponse.json({ ...response }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ status: 500, error });
+    return NextResponse.json({ error }, { status: 500 });
   }
 };
