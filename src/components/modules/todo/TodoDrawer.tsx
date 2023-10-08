@@ -10,11 +10,13 @@ export interface TodoDrawerProps extends Omit<DrawerProps, "children"> {
   onCreateChildClick: () => void;
   onCompleteClick: () => void;
   onVisibilityClick: () => void;
+  onChildClick: (id: string) => void;
 }
 
 export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
   const {
     todo,
+    onChildClick,
     onCreateChildClick,
     onCompleteClick,
     onVisibilityClick,
@@ -53,6 +55,7 @@ export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
           onCreateChildClick={onCreateChildClick}
           onCompleteClick={onCompleteClick}
           onVisibilityClick={onVisibilityClick}
+          onChildClick={onChildClick}
         />
       </Drawer.Body>
     </Drawer>

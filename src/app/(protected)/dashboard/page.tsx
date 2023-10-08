@@ -13,8 +13,11 @@ const DashboardPage = () => {
   const { data: todoData, isLoading: isTodoDataLoading } = useTodoListQuery({});
 
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
+  const [selectedChildTodo, setSelectedChildTodo] = useState<string | null>(
+    null
+  );
   const { data: todo, isFetching: isTodoLoading } = useTodoQuery(
-    selectedTodo || undefined
+    selectedChildTodo || selectedTodo || undefined
   );
 
   const { mutateAsync: createTodo, isLoading: isCreatingTodo } =
@@ -48,6 +51,7 @@ const DashboardPage = () => {
         onCreateTodo={createTodoHandler}
         onSelectedTodoChange={setSelectedTodo}
         onCreateChild={createChildTodoHandler}
+        onSelectedChildTodoChange={setSelectedChildTodo}
       />
     </>
   );
