@@ -1,24 +1,26 @@
 import { nextAuthOptions } from "@/libs/next-auth";
 import { Session, getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
-import { Schema as ZodSchema } from "zod";
+import { Schema as ZodSchema, z } from "zod";
 import { getNextResponse } from "./get-next-response";
 
 type CommonCallbackContext<S, C> = {
   req: NextRequest;
-  data?: S;
-  context?: C;
+  data: S;
+  context: C;
   session: Session;
 };
 
 type Arguments<Context extends object, Schema extends ZodSchema> = {
   schema?: Schema;
-  callback: (ctx: CommonCallbackContext<Schema, Context>) => Promise<any>;
+  callback: (
+    ctx: CommonCallbackContext<z.infer<Schema>, Context>
+  ) => Promise<any>;
 };
 
 export const getApiRouteHandler = <
   Context extends object,
-  Schema extends ZodSchema
+  Schema extends ZodSchema = ZodSchema
 >(
   args: Arguments<Context, Schema>
 ) => {
@@ -32,10 +34,20 @@ export const getApiRouteHandler = <
     }
 
     let body: Schema["_output"] | undefined;
+    const params: Record<string, any> = {};
 
     if (schema) {
-      body = await req.json();
-      const validation = schema.safeParse(body);
+      if (req.method === "GET") {
+        const paramsEntries = req.nextUrl.searchParams.entries();
+
+        Array.from(paramsEntries).forEach(([k, v]) => {
+          params[k] = v;
+        });
+      } else {
+        body = await req.json();
+      }
+
+      const validation = schema.safeParse(req.method === "GET" ? params : body);
 
       if (!validation.success) {
         return getNextResponse(
