@@ -2,6 +2,7 @@
 
 import { TodoFormValues } from "@/components/forms/TodoForm";
 import { DashboardTemplate } from "@/components/templates/DashboardTemplate";
+import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { useCreateChildTodoMutation } from "@/libs/react-query/hooks/mutation/create-child";
 import { useCreateTodoMutation } from "@/libs/react-query/hooks/mutation/create-todo";
 import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
@@ -9,13 +10,17 @@ import { useTodoListQuery } from "@/libs/react-query/hooks/query/todo-list";
 import { useCallback, useState } from "react";
 
 const DashboardPage = () => {
-  const { data: todoData } = useTodoListQuery({});
+  const { data: todoData, isLoading: isTodoDataLoading } = useTodoListQuery({});
 
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
-  const { data: todo } = useTodoQuery(selectedTodo || undefined);
+  const { data: todo, isFetching: isTodoLoading } = useTodoQuery(
+    selectedTodo || undefined
+  );
 
-  const { mutateAsync: createTodo } = useCreateTodoMutation();
-  const { mutateAsync: createChildTodo } = useCreateChildTodoMutation();
+  const { mutateAsync: createTodo, isLoading: isCreatingTodo } =
+    useCreateTodoMutation();
+  const { mutateAsync: createChildTodo, isLoading: isCreateChildLoading } =
+    useCreateChildTodoMutation();
 
   const createTodoHandler = useCallback(
     async (values: TodoFormValues) => createTodo({ title: values.name }),
@@ -28,14 +33,23 @@ const DashboardPage = () => {
     [createChildTodo]
   );
 
+  const isLoading =
+    isTodoDataLoading ||
+    isTodoLoading ||
+    isCreatingTodo ||
+    isCreateChildLoading;
+
   return (
-    <DashboardTemplate
-      list={todoData}
-      todo={todo}
-      onCreateTodo={createTodoHandler}
-      onSelectedTodoChange={setSelectedTodo}
-      onCreateChild={createChildTodoHandler}
-    />
+    <>
+      {isLoading && <LoadingIndicator />}
+      <DashboardTemplate
+        list={todoData}
+        todo={todo}
+        onCreateTodo={createTodoHandler}
+        onSelectedTodoChange={setSelectedTodo}
+        onCreateChild={createChildTodoHandler}
+      />
+    </>
   );
 };
 
