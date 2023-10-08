@@ -1,4 +1,4 @@
-import { RegistrationBody } from "@/app/api/registration/schema";
+import { RegistrationBody } from "@/app/api/auth/registration/schema";
 import { ProjectApiUrls } from "@/const/url";
 import { AbstractApiModule } from "../../helper";
 

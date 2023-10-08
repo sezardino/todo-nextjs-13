@@ -12,7 +12,7 @@ export const ProjectPageUrls = {
 };
 
 export const ProjectApiUrls = {
-  registration: "/api/registration",
+  registration: "/api/auth/registration",
   settings: "/api/users/settings",
   todoList: "/api/todo",
   createTodo: "/api/todo",
