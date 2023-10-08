@@ -61,6 +61,7 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
           onCompleteClick={() => undefined}
           onCreateChildClick={() => undefined}
           onVisibilityClick={() => undefined}
+          onChildClick={() => undefined}
         />
       )}
     </>

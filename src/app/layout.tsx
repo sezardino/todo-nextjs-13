@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import { FC, PropsWithChildren } from "react";
 import { Providers } from "./provider";
 
+import { nextAuthOptions } from "@/libs/next-auth";
 import "@/styles/global.css";
 import { getServerSession } from "next-auth";
-import { nextAuthOptions } from "./api/auth/[...nextauth]/route";
 
 const inter = Inter({ subsets: ["latin"] });
 

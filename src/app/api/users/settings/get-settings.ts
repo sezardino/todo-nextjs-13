@@ -1,10 +1,10 @@
-import { getNextAuthOptions } from "@/libs/next-auth";
+import { nextAuthOptions } from "@/libs/next-auth";
 import { dbService } from "@/services/db";
 import { getNextResponse } from "@/utils/get-next-response";
 import { getServerSession } from "next-auth";
 
 export const getSettings = async () => {
-  const session = await getServerSession(getNextAuthOptions());
+  const session = await getServerSession(nextAuthOptions);
 
   if (!session) {
     return getNextResponse({}, 401);

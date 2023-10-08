@@ -1,4 +1,4 @@
-import { getNextAuthOptions } from "@/libs/next-auth";
+import { nextAuthOptions } from "@/libs/next-auth";
 import { dbService } from "@/services/db";
 import { getNextResponse } from "@/utils/get-next-response";
 import { getServerSession } from "next-auth";
@@ -9,7 +9,7 @@ export const createChildTodo = async (
   req: NextRequest,
   context: { params: { id: string } }
 ) => {
-  const session = await getServerSession(getNextAuthOptions());
+  const session = await getServerSession(nextAuthOptions);
 
   if (!session) {
     return NextResponse.json({ status: 401 });

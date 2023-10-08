@@ -1,4 +1,4 @@
-import { getNextAuthOptions } from "@/libs/next-auth";
+import { nextAuthOptions } from "@/libs/next-auth";
 import { Session, getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import { Schema as ZodSchema } from "zod";
@@ -25,7 +25,7 @@ export const getApiRouteHandler = <
   const { schema, callback } = args;
 
   return async (req: NextRequest, context: Context) => {
-    const session = await getServerSession(getNextAuthOptions());
+    const session = await getServerSession(nextAuthOptions);
 
     if (!session) {
       return getNextResponse({}, 401);

@@ -1,11 +1,11 @@
-import { getNextAuthOptions } from "@/libs/next-auth";
+import { nextAuthOptions } from "@/libs/next-auth";
 import { dbService } from "@/services/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { createTodoValidationSchema } from "./schema";
 
 export const createTodo = async (req: NextRequest) => {
-  const session = await getServerSession(getNextAuthOptions());
+  const session = await getServerSession(nextAuthOptions);
 
   if (!session) {
     return NextResponse.json({ status: 401 });

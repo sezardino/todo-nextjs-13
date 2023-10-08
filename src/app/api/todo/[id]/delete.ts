@@ -1,10 +1,10 @@
-import { getNextAuthOptions } from "@/libs/next-auth";
+import { nextAuthOptions } from "@/libs/next-auth";
 import { dbService } from "@/services/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export const deleteTodo = async (req: NextRequest, context: { id: string }) => {
-  const session = await getServerSession(getNextAuthOptions());
+  const session = await getServerSession(nextAuthOptions);
 
   if (!session) {
     return NextResponse.json({ status: 401 });

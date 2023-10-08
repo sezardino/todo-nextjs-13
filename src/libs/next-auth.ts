@@ -1,15 +1,14 @@
+import { dbService } from "@/services/db";
 import { NextAuthOptions } from "next-auth";
-import CredentialsProvider, {
-  CredentialsConfig,
-} from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
+import z from "zod";
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "./prisma";
+const loginValidationService = z.object({
+  login: z.string(),
+  password: z.string(),
+});
 
-export const getNextAuthOptions = (
-  authorize?: CredentialsConfig["authorize"]
-): NextAuthOptions => ({
-  adapter: PrismaAdapter(prisma),
+export const nextAuthOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
@@ -53,7 +52,27 @@ export const getNextAuthOptions = (
           placeholder: String.fromCharCode(9679).repeat(10),
         },
       },
-      authorize: authorize || (() => null),
+      async authorize(credentials) {
+        const validation = loginValidationService.safeParse(credentials);
+
+        if (!validation.success) return null;
+
+        try {
+          const response = await dbService.auth.login({
+            login: validation.data.login,
+            password: validation.data.password,
+          });
+
+          if ("code" in response || !response) return null;
+
+          return {
+            id: response.id,
+            login: response.login,
+          };
+        } catch (error) {
+          return null;
+        }
+      },
     }),
   ],
-});
+};
