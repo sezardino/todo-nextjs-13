@@ -27,16 +27,16 @@ export const TodoListItem: FC<TodoListItemProps> = (props) => {
       onClick={onShowMoreClick}
     >
       <Card className="rounded-md">
-        <CardBody className="justify-between p-3">
+        <CardBody className="flex flex-wrap flex-row gap-3 items-center justify-between p-3">
           <h3 className="text-small font-semibold leading-none text-default-600">
             {title}
           </h3>
-          <div>
+          <div className="flex gap-2">
             {hasDescription && (
-              <Icon name="HiMenuAlt2" className="text-default-400" />
+              <Icon name="HiMenuAlt2" size={16} className="text-default-400" />
             )}
             {isCompleted && (
-              <Icon name="HiCheckCircle" className="text-green-500" />
+              <Icon name="HiCheckCircle" size={16} className="text-green-500" />
             )}
           </div>
         </CardBody>

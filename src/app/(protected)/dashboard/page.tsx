@@ -1,10 +1,12 @@
 "use client";
 
+import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { TodoFormValues } from "@/components/forms/TodoForm";
 import { DashboardTemplate } from "@/components/templates/DashboardTemplate";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { useCreateChildTodoMutation } from "@/libs/react-query/hooks/mutation/create-child";
 import { useCreateTodoMutation } from "@/libs/react-query/hooks/mutation/create-todo";
+import { useUpdateTodo } from "@/libs/react-query/hooks/mutation/update-todo";
 import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
 import { useTodoListQuery } from "@/libs/react-query/hooks/query/todo-list";
 import { useCallback, useState } from "react";
@@ -25,6 +27,15 @@ const DashboardPage = () => {
   const { mutateAsync: createChildTodo, isLoading: isCreateChildLoading } =
     useCreateChildTodoMutation();
 
+  const { mutateAsync: updateTodo, isLoading: isUpdateTodoLoading } =
+    useUpdateTodo();
+
+  const updateTodoHandler = useCallback(
+    async (data: UpdateTodoBody) =>
+      selectedTodo ? updateTodo({ ...data, id: selectedTodo }) : undefined,
+    [selectedTodo, updateTodo]
+  );
+
   const createTodoHandler = useCallback(
     async (values: TodoFormValues) => createTodo({ title: values.name }),
     [createTodo]
@@ -40,7 +51,8 @@ const DashboardPage = () => {
     isTodoDataLoading ||
     isTodoLoading ||
     isCreatingTodo ||
-    isCreateChildLoading;
+    isCreateChildLoading ||
+    isUpdateTodoLoading;
 
   return (
     <>
@@ -52,6 +64,7 @@ const DashboardPage = () => {
         onSelectedTodoChange={setSelectedTodo}
         onCreateChild={createChildTodoHandler}
         onSelectedChildTodoChange={setSelectedChildTodo}
+        onUpdateTodo={updateTodoHandler}
       />
     </>
   );

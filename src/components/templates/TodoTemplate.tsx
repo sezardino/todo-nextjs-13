@@ -1,3 +1,4 @@
+import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { TodoOneResponse } from "@/services/db/modules/todo/types";
 import { useState, type ComponentPropsWithoutRef, type FC } from "react";
 import { TodoFormValues } from "../forms/TodoForm";
@@ -10,6 +11,7 @@ export type TodoTemplateProps = ComponentPropsWithoutRef<"section"> & {
   childTodo?: TodoOneResponse;
   onSelectChildTodo: (id: string | null) => void;
   onCreateChild: (values: TodoFormValues) => Promise<any>;
+  onUpdateTodo: (data: UpdateTodoBody) => void;
 };
 
 export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
@@ -18,6 +20,7 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
     childTodo,
     onCreateChild,
     onSelectChildTodo,
+    onUpdateTodo,
     className,
     ...rest
   } = props;
@@ -42,6 +45,7 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
             onCreateChildClick={() => setIsCreateModalOpen(true)}
             onVisibilityClick={() => undefined}
             onChildClick={(id) => onSelectChildTodo(id)}
+            onUpdateTodo={onUpdateTodo}
           />
         )}
       </section>
@@ -62,6 +66,7 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
           onCreateChildClick={() => undefined}
           onVisibilityClick={() => undefined}
           onChildClick={() => undefined}
+          onUpdateTodo={onUpdateTodo}
         />
       )}
     </>

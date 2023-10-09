@@ -1,9 +1,11 @@
 "use client";
 
+import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { TodoFormValues } from "@/components/forms/TodoForm";
 import { TodoTemplate } from "@/components/templates/TodoTemplate";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { useCreateChildTodoMutation } from "@/libs/react-query/hooks/mutation/create-child";
+import { useUpdateTodo } from "@/libs/react-query/hooks/mutation/update-todo";
 import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
 import { NextPage } from "next";
 import { useCallback, useState } from "react";
@@ -27,7 +29,19 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
     [createChildTodo, id]
   );
 
-  const isLoading = isTodoLoading || isChildLoading || isCreateChildLoading;
+  const { mutateAsync: updateTodo, isLoading: isUpdateTodoLoading } =
+    useUpdateTodo();
+
+  const updateTodoHandler = useCallback(
+    async (data: UpdateTodoBody) => updateTodo({ ...data, id }),
+    [id, updateTodo]
+  );
+
+  const isLoading =
+    isTodoLoading ||
+    isChildLoading ||
+    isCreateChildLoading ||
+    isUpdateTodoLoading;
 
   return (
     <>
@@ -37,6 +51,7 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
         childTodo={childTodo}
         onSelectChildTodo={setSelectedChild}
         onCreateChild={createChildTodoHandler}
+        onUpdateTodo={updateTodoHandler}
       />
     </>
   );

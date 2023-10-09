@@ -1,3 +1,4 @@
+import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import {
   TodoListResponse,
   TodoOneResponse,
@@ -17,6 +18,7 @@ export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   onCreateChild: (values: TodoFormValues, parentId: string) => Promise<any>;
   onSelectedTodoChange: (id: string | null) => void;
   onSelectedChildTodoChange: (id: string | null) => void;
+  onUpdateTodo: (data: UpdateTodoBody) => void;
 };
 
 type TodoModalData = {
@@ -30,6 +32,7 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
     onSelectedChildTodoChange,
     onSelectedTodoChange,
     onCreateChild,
+    onUpdateTodo,
     list,
     onCreateTodo,
     className,
@@ -106,6 +109,7 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
           }
           onVisibilityClick={() => undefined}
           onChildClick={onSelectedChildTodoChange}
+          onUpdateTodo={onUpdateTodo}
         />
       )}
     </>

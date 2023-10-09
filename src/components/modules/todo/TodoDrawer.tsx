@@ -1,3 +1,4 @@
+import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { Breadcrumb, Breadcrumbs } from "@/components/base/Breadcrumbs";
 import { Drawer, DrawerProps } from "@/components/base/Drawer";
 import { ProjectPageUrls } from "@/const/url";
@@ -11,6 +12,7 @@ export interface TodoDrawerProps extends Omit<DrawerProps, "children"> {
   onCompleteClick: () => void;
   onVisibilityClick: () => void;
   onChildClick: (id: string) => void;
+  onUpdateTodo: (data: UpdateTodoBody) => void;
 }
 
 export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
@@ -20,6 +22,7 @@ export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
     onCreateChildClick,
     onCompleteClick,
     onVisibilityClick,
+    onUpdateTodo,
     ...rest
   } = props;
 
@@ -56,6 +59,7 @@ export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
           onCompleteClick={onCompleteClick}
           onVisibilityClick={onVisibilityClick}
           onChildClick={onChildClick}
+          onUpdateTodo={onUpdateTodo}
         />
       </Drawer.Body>
     </Drawer>
