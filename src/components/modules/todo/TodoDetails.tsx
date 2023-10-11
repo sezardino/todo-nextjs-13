@@ -15,8 +15,9 @@ import { ChildrenList } from "./ChildrenList";
 
 export type TodoDetailsProps = ComponentPropsWithoutRef<"section"> & {
   todo: TodoOneResponse;
-  onVisibilityClick?: () => void;
-  onCompleteClick: () => void;
+  onCompleteRequest: () => void;
+  onHideRequest: () => void;
+  onDeleteRequest: () => void;
   onCreateChildClick?: () => void;
   onChildClick?: (id: string) => void;
   onUpdateTodo: (data: UpdateTodoBody) => void;
@@ -26,9 +27,10 @@ export const TodoDetails: FC<TodoDetailsProps> = (props) => {
   const {
     todo,
     onChildClick,
-    onCompleteClick,
+    onCompleteRequest,
+    onHideRequest,
+    onDeleteRequest,
     onCreateChildClick,
-    onVisibilityClick,
     onUpdateTodo,
     className,
     ...rest
@@ -40,14 +42,18 @@ export const TodoDetails: FC<TodoDetailsProps> = (props) => {
     const parentItems = [
       {
         label: `${todo.hidden ? "Show" : "Hide"} Todo`,
-        onClick: () => {},
+        onClick: onHideRequest,
       },
     ];
 
     const commonItems = [
       {
         label: `Mark as ${todo.completed ? "Uncompleted" : "Completed"}`,
-        onClick: () => {},
+        onClick: onCompleteRequest,
+      },
+      {
+        label: "Delete",
+        onClick: onDeleteRequest,
       },
     ];
 
@@ -60,8 +66,8 @@ export const TodoDetails: FC<TodoDetailsProps> = (props) => {
 
   return (
     <section {...rest} className={twMerge(className)}>
-      <header className="flex items-center justify-between">
-        <div className="flex flex-col gap-2">
+      <header className="flex items-start justify-between">
+        <div className="flex flex-col items-start gap-2">
           <h2>{todo.title}</h2>
           {onCreateChildClick && !hasParent && (
             <Button size="sm" onClick={onCreateChildClick}>
@@ -84,7 +90,11 @@ export const TodoDetails: FC<TodoDetailsProps> = (props) => {
       </div>
 
       {!!todo.children.length && (
-        <ChildrenList items={todo.children} onChildClick={onChildClick} />
+        <ChildrenList
+          items={todo.children}
+          onChildClick={onChildClick}
+          className="mt-5"
+        />
       )}
     </section>
   );

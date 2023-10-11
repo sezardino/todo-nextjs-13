@@ -3,14 +3,16 @@ import { Breadcrumb, Breadcrumbs } from "@/components/base/Breadcrumbs";
 import { Drawer, DrawerProps } from "@/components/base/Drawer";
 import { ProjectPageUrls } from "@/const/url";
 import { TodoOneResponse } from "@/services/db/modules/todo/types";
+import { getStringShorted } from "@/utils/get-string-shorted";
 import { useMemo, type FC } from "react";
 import { TodoDetails } from "./TodoDetails";
 
 export interface TodoDrawerProps extends Omit<DrawerProps, "children"> {
   todo: TodoOneResponse;
-  onCreateChildClick: () => void;
-  onCompleteClick: () => void;
-  onVisibilityClick: () => void;
+  onCreateChildRequest: () => void;
+  onCompleteRequest: () => void;
+  onHideRequest: () => void;
+  onDeleteRequest: () => void;
   onChildClick: (id: string) => void;
   onUpdateTodo: (data: UpdateTodoBody) => void;
 }
@@ -19,9 +21,10 @@ export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
   const {
     todo,
     onChildClick,
-    onCreateChildClick,
-    onCompleteClick,
-    onVisibilityClick,
+    onCreateChildRequest,
+    onCompleteRequest,
+    onDeleteRequest,
+    onHideRequest,
     onUpdateTodo,
     ...rest
   } = props;
@@ -33,12 +36,12 @@ export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
     };
 
     const parentBreadcrumb = todo.parent && {
-      name: todo.parent.title,
+      name: getStringShorted(todo.parent.title),
       href: ProjectPageUrls.todo(todo.parent.id),
     };
 
     const thisBreadcrumb = {
-      name: todo.title,
+      name: getStringShorted(todo.title),
       href: ProjectPageUrls.todo(todo.id),
     };
 
@@ -55,9 +58,10 @@ export const TodoDrawer: FC<TodoDrawerProps> = (props) => {
       <Drawer.Body>
         <TodoDetails
           todo={todo}
-          onCreateChildClick={onCreateChildClick}
-          onCompleteClick={onCompleteClick}
-          onVisibilityClick={onVisibilityClick}
+          onCreateChildClick={onCreateChildRequest}
+          onCompleteRequest={onCompleteRequest}
+          onHideRequest={onHideRequest}
+          onDeleteRequest={onDeleteRequest}
           onChildClick={onChildClick}
           onUpdateTodo={onUpdateTodo}
         />

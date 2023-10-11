@@ -7,7 +7,13 @@ import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/froala_style.min.css";
 
-import { useState, type ComponentPropsWithoutRef, type FC } from "react";
+import {
+  KeyboardEvent,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type FC,
+} from "react";
 import Froala from "react-froala-wysiwyg";
 import FroalaPreview from "react-froala-wysiwyg/FroalaEditorView";
 import { twMerge } from "tailwind-merge";
@@ -124,10 +130,21 @@ export const Editor: FC<EditorProps> = (props) => {
   const { content, placeholder, onSave, ...rest } = props;
   const [model, setModel] = useState(content || "");
   const [isPreview, setIsPreview] = useState(true);
+  const editorRef = useRef<Froala | null>(null);
 
   const blurHandler = () => {
-    onSave(model);
+    saveHandler();
     setIsPreview(true);
+  };
+
+  const saveHandler = () => {
+    if (content === model) return;
+
+    onSave(model);
+  };
+
+  const keydownHandler = (evt: KeyboardEvent<HTMLTextAreaElement>) => {
+    evt.stopPropagation();
   };
 
   return (
@@ -135,11 +152,12 @@ export const Editor: FC<EditorProps> = (props) => {
       <div {...rest}>
         {!isPreview && (
           <Froala
+            ref={editorRef}
             tag="textarea"
             config={{
               ...baseConfig,
               height: 200,
-              events: { blur: blurHandler },
+              events: { blur: blurHandler, keydown: keydownHandler },
               placeholderText: placeholder,
             }}
             model={model}

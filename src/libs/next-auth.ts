@@ -1,5 +1,5 @@
 import { dbService } from "@/services/db";
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import z from "zod";
 
@@ -76,3 +76,5 @@ export const nextAuthOptions: NextAuthOptions = {
     }),
   ],
 };
+
+export const getNextAuthSession = () => getServerSession(nextAuthOptions);
