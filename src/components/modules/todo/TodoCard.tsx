@@ -3,6 +3,7 @@
 import { Icon } from "@/components/base/Icon";
 import { Card, CardFooter, CardHeader } from "@nextui-org/react";
 import { ComponentPropsWithoutRef, type FC } from "react";
+import { twMerge } from "tailwind-merge";
 
 export type TodoCardProps = ComponentPropsWithoutRef<"button"> & {
   title: string;
@@ -27,8 +28,10 @@ export const TodoCard: FC<TodoCardProps> = (props) => {
 
   return (
     <button type="button" {...rest} onClick={onShowMoreClick}>
-      <Card>
-        <CardHeader className="justify-between pb-0">
+      <Card className="h-full justify-between">
+        <CardHeader
+          className={twMerge("justify-between pb-0", !isCompleted && "pt-4")}
+        >
           <h3 className="text-small font-semibold leading-none text-default-600">
             {title}
           </h3>

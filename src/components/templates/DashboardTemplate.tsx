@@ -12,6 +12,7 @@ import { TodoFormValues } from "../forms/TodoForm";
 import { TodoDrawer } from "../modules/todo/TodoDrawer";
 import { TodoFormModal } from "../modules/todo/TodoFormModal";
 import { TodoList } from "../modules/todo/TodoList";
+import { SearchForm } from "../ui/SearchForm";
 
 export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   list?: TodoListResponse;
@@ -24,6 +25,7 @@ export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   onCompleteTodo: (id: string) => Promise<any>;
   onHideTodo: (id: string) => Promise<any>;
   onDeleteTodo: (id: string) => Promise<any>;
+  onSearch: (value: string) => void;
 };
 
 type TodoModalData = {
@@ -33,6 +35,7 @@ type TodoModalData = {
 
 export const DashboardTemplate: FC<DashboardProps> = (props) => {
   const {
+    onSearch,
     todo,
     onCompleteTodo,
     onHideTodo,
@@ -95,6 +98,7 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
       <section {...rest} className={className}>
         <header className="flex flex-wrap gap-3 justify-between items-center">
           <h1>Todos</h1>
+          <SearchForm onSearch={onSearch} placeholder="Search..." />
           <Button onClick={() => setTodoModalData({ variant: "parent" })}>
             Create Todo
             <Icon name="HiPlus" />

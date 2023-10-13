@@ -34,7 +34,7 @@ export const getApiRouteHandler = <
     }
 
     let body: Schema["_output"] | undefined;
-    const params: Record<string, any> = {};
+    let params: Record<string, any> = {};
 
     if (schema) {
       if (req.method === "GET") {
@@ -48,17 +48,23 @@ export const getApiRouteHandler = <
       }
 
       const validation = schema.safeParse(req.method === "GET" ? params : body);
-
       if (!validation.success) {
         return getNextResponse(
           { message: "Invalid request", errors: validation.error.errors },
           400
         );
       }
+
+      body = params = validation.data;
     }
 
     try {
-      const response = await callback({ req, data: body, context, session });
+      const response = await callback({
+        req,
+        data: req.method === "GET" ? params : body,
+        context,
+        session,
+      });
 
       if (!response) return getNextResponse({}, 404);
 

@@ -15,7 +15,11 @@ import { useTodoListQuery } from "@/libs/react-query/hooks/query/todo-list";
 import { useCallback, useState } from "react";
 
 const DashboardPage = () => {
-  const { data: todoData, isLoading: isTodoDataLoading } = useTodoListQuery({});
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const { data: todoData, isLoading: isTodoDataLoading } = useTodoListQuery({
+    search: searchValue,
+  });
 
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
   const [selectedChildTodo, setSelectedChildTodo] = useState<string | null>(
@@ -104,6 +108,7 @@ const DashboardPage = () => {
         onCreateChild={createChildTodoHandler}
         onSelectedChildTodoChange={setSelectedChildTodo}
         onUpdateTodo={updateTodoHandler}
+        onSearch={setSearchValue}
       />
     </>
   );

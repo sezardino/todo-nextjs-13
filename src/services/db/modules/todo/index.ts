@@ -37,7 +37,7 @@ export class TodoDBModule extends AbstractDBModule {
       where.hidden = hidden;
     }
 
-    if (!!search) {
+    if (typeof search === "string" && !!search) {
       where.title = { contains: search };
     }
 
