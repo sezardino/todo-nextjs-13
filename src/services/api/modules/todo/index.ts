@@ -39,4 +39,8 @@ export class TodoApiService extends AbstractApiModule {
       data: rest,
     });
   }
+
+  async delete(id: string) {
+    return this.fetcher(ProjectApiUrls.todo(id), { method: "DELETE" });
+  }
 }

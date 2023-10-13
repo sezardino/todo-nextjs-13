@@ -64,7 +64,8 @@ export const getApiRouteHandler = <
 
       return getNextResponse(response, 200);
     } catch (error) {
-      return getNextResponse({}, 500);
+      console.log(error);
+      return getNextResponse({ error }, 500);
     }
   };
 };

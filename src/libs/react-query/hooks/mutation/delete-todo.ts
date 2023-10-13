@@ -1,16 +1,8 @@
-import { ProjectApiUrls } from "@/const/url";
+import { api } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
-const handler = async (id: string) => {
-  return axios({
-    url: ProjectApiUrls.deleteTodo(id),
-    method: "DELETE",
-  });
-};
-
-export const useCreateTodoMutation = () => {
+export const useDeleteTodoMutation = () => {
   return useMutation({
-    mutationFn: handler,
+    mutationFn: (id: string) => api.todo.delete(id),
   });
 };

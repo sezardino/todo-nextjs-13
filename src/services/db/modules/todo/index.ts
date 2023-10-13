@@ -29,9 +29,28 @@ export class TodoDBModule extends AbstractDBModule {
     });
   }
 
-  delete(dto: DeleteTodoDto) {
-    return this.prismaService.todo.delete({
+  async delete(dto: DeleteTodoDto) {
+    const todo = await this.prismaService.todo.findUnique({
       where: { id: dto.todoId, userId: dto.userId },
+      select: { children: { select: { id: true } } },
+    });
+
+    // delete children if it have
+    if (todo?.children.length) {
+      await this.prismaService.todo.deleteMany({
+        where: {
+          userId: dto.userId,
+          parentId: dto.todoId,
+        },
+      });
+    }
+
+    // delete todo
+    return this.prismaService.todo.delete({
+      where: {
+        id: dto.todoId,
+        userId: dto.userId,
+      },
     });
   }
 

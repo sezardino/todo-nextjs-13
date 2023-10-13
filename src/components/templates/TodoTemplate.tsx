@@ -1,6 +1,7 @@
 import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { TodoOneResponse } from "@/services/db/modules/todo/types";
 import { useState, type ComponentPropsWithoutRef, type FC } from "react";
+import { TodoBreadcrumbs } from "../base/TodoBreadcrumbs";
 import { TodoFormValues } from "../forms/TodoForm";
 import { TodoDetails } from "../modules/todo/TodoDetails";
 import { TodoDrawer } from "../modules/todo/TodoDrawer";
@@ -12,6 +13,9 @@ export type TodoTemplateProps = ComponentPropsWithoutRef<"section"> & {
   onSelectChildTodo: (id: string | null) => void;
   onCreateChild: (values: TodoFormValues) => Promise<any>;
   onUpdateTodo: (data: UpdateTodoBody) => void;
+  onDeleteTodo: (id?: string) => Promise<any>;
+  onCompleteTodo: (id?: string) => void;
+  onHideTodo: (id?: string) => void;
 };
 
 export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
@@ -20,6 +24,9 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
     childTodo,
     onCreateChild,
     onSelectChildTodo,
+    onHideTodo,
+    onCompleteTodo,
+    onDeleteTodo,
     onUpdateTodo,
     className,
     ...rest
@@ -39,14 +46,18 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
     <>
       <section {...rest} className={className}>
         {todo && (
-          <TodoDetails
-            todo={todo}
-            onCompleteClick={() => undefined}
-            onCreateChildClick={() => setIsCreateModalOpen(true)}
-            onVisibilityClick={() => undefined}
-            onChildClick={(id) => onSelectChildTodo(id)}
-            onUpdateTodo={onUpdateTodo}
-          />
+          <>
+            <TodoBreadcrumbs todo={todo} />
+            <TodoDetails
+              todo={todo}
+              onCompleteRequest={onCompleteTodo}
+              onCreateChildClick={() => setIsCreateModalOpen(true)}
+              onHideRequest={onHideTodo}
+              onChildClick={(id) => onSelectChildTodo(id)}
+              onUpdateTodo={onUpdateTodo}
+              onDeleteRequest={onDeleteTodo}
+            />
+          </>
         )}
       </section>
 
@@ -61,11 +72,10 @@ export const TodoTemplate: FC<TodoTemplateProps> = (props) => {
         <TodoDrawer
           isOpen
           todo={childTodo}
+          onDeleteRequest={() => onDeleteTodo(childTodo.id)}
           onClose={() => onSelectChildTodo(null)}
-          onCompleteClick={() => undefined}
-          onCreateChildClick={() => undefined}
-          onVisibilityClick={() => undefined}
-          onChildClick={() => undefined}
+          onCompleteRequest={() => onCompleteTodo(childTodo.id)}
+          onHideRequest={() => onHideTodo(childTodo.id)}
           onUpdateTodo={onUpdateTodo}
         />
       )}
