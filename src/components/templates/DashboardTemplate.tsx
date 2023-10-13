@@ -1,3 +1,7 @@
+import {
+  CompletedFilter,
+  VisibilityFilter,
+} from "@/app/(protected)/dashboard/page";
 import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { useConfirmTodo } from "@/hooks/use-confirm-todo";
 import {
@@ -5,9 +9,15 @@ import {
   TodoOneResponse,
 } from "@/services/db/modules/todo/types";
 import { Button } from "@nextui-org/react";
-import { useState, type ComponentPropsWithoutRef, type FC } from "react";
+import {
+  useMemo,
+  useState,
+  type ComponentPropsWithoutRef,
+  type FC,
+} from "react";
 import { ConfirmDialog } from "../base/ConfirmDialog";
 import { Icon } from "../base/Icon";
+import { Select } from "../base/Select";
 import { TodoFormValues } from "../forms/TodoForm";
 import { TodoDrawer } from "../modules/todo/TodoDrawer";
 import { TodoFormModal } from "../modules/todo/TodoFormModal";
@@ -26,6 +36,10 @@ export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   onHideTodo: (id: string) => Promise<any>;
   onDeleteTodo: (id: string) => Promise<any>;
   onSearch: (value: string) => void;
+  currentVisibilityFilter: VisibilityFilter;
+  currentCompletedFilter: CompletedFilter;
+  onVisibilityFilterChange: (value: VisibilityFilter) => void;
+  onCompletedFilterChange: (value: CompletedFilter) => void;
 };
 
 type TodoModalData = {
@@ -35,6 +49,10 @@ type TodoModalData = {
 
 export const DashboardTemplate: FC<DashboardProps> = (props) => {
   const {
+    currentCompletedFilter,
+    currentVisibilityFilter,
+    onCompletedFilterChange,
+    onVisibilityFilterChange,
     onSearch,
     todo,
     onCompleteTodo,
@@ -93,16 +111,38 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
     onSelectedTodoChange(null);
   };
 
+  const visibilityFilters = useMemo<
+    { label: string; value: VisibilityFilter }[]
+  >(
+    () => [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+      { label: "All", value: "all" },
+    ],
+    []
+  );
+
+  const completedFilters = useMemo<{ label: string; value: CompletedFilter }[]>(
+    () => [
+      { label: "All", value: "all" },
+      { label: "Completed", value: "completed" },
+      { label: "Not Completed", value: "uncompleted" },
+    ],
+    []
+  );
+
   return (
     <>
       <section {...rest} className={className}>
         <header className="flex flex-wrap gap-3 justify-between items-center">
           <h1>Todos</h1>
-          <SearchForm onSearch={onSearch} placeholder="Search..." />
-          <Button onClick={() => setTodoModalData({ variant: "parent" })}>
-            Create Todo
-            <Icon name="HiPlus" />
-          </Button>
+          <div className="flex items-center gap-3 flex-wrap">
+            <SearchForm onSearch={onSearch} placeholder="Search..." />
+            <Button onClick={() => setTodoModalData({ variant: "parent" })}>
+              Create Todo
+              <Icon name="HiPlus" />
+            </Button>
+          </div>
         </header>
 
         {!!list?.data.length && (
@@ -110,7 +150,28 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
             list={list}
             className="mt-8"
             onMoreButtonClick={onSelectedTodoChange}
-          />
+          >
+            <div className="flex-grow flex items-center gap-3 flex-wrap">
+              <Select
+                label="Show:"
+                defaultSelectedKeys={[currentCompletedFilter]}
+                onChange={(evt) =>
+                  onCompletedFilterChange(evt.target.value as CompletedFilter)
+                }
+                items={completedFilters}
+                className="max-w-[150px]"
+              />
+              <Select
+                label="Show:"
+                defaultSelectedKeys={[currentVisibilityFilter]}
+                items={visibilityFilters}
+                onChange={(evt) =>
+                  onVisibilityFilterChange(evt.target.value as VisibilityFilter)
+                }
+                className="max-w-[150px]"
+              />
+            </div>
+          </TodoList>
         )}
       </section>
 

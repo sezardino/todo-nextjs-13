@@ -20,22 +20,24 @@ export interface TodoListProps extends ComponentPropsWithoutRef<"div"> {
 type ListViewType = "list" | "grid";
 
 export const TodoList: FC<TodoListProps> = (props) => {
-  const { list, onMoreButtonClick, className, ...rest } = props;
+  const { list, onMoreButtonClick, children, className, ...rest } = props;
   const [viewType, setViewType] = useState<ListViewType>("grid");
 
   return (
     <div {...rest} className={twMerge("grid grid-cols-1 gap-5", className)}>
-      <Tabs
-        radius="full"
-        size="md"
-        selectedKey={viewType}
-        className="ml-auto"
-        aria-label="List View"
-        onSelectionChange={(key) => setViewType(key as ListViewType)}
-      >
-        <Tab key="grid" title={<Icon name="HiViewGrid" />} />
-        <Tab key="list" title={<Icon name="HiOutlineViewList" />} />
-      </Tabs>
+      <div className="flex flex-wrap gap-3 justify-between items-center">
+        {children}
+        <Tabs
+          radius="full"
+          size="md"
+          selectedKey={viewType}
+          aria-label="List View"
+          onSelectionChange={(key) => setViewType(key as ListViewType)}
+        >
+          <Tab key="grid" title={<Icon name="HiViewGrid" />} />
+          <Tab key="list" title={<Icon name="HiOutlineViewList" />} />
+        </Tabs>
+      </div>
 
       <ul
         className={twMerge(

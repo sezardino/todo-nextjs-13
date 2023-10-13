@@ -26,7 +26,6 @@ export class TodoDBModule extends AbstractDBModule {
     const where: Prisma.TodoWhereInput = {
       userId,
       parent: null,
-      hidden: false,
     };
 
     if (completed !== undefined) {

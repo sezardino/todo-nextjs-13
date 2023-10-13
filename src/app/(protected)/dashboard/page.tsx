@@ -14,11 +14,29 @@ import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
 import { useTodoListQuery } from "@/libs/react-query/hooks/query/todo-list";
 import { useCallback, useState } from "react";
 
+export type CompletedFilter = "completed" | "uncompleted" | "all";
+export type VisibilityFilter = "visible" | "hidden" | "all";
+
 const DashboardPage = () => {
   const [searchValue, setSearchValue] = useState<string>("");
-
+  const [completedFilter, setCompletedFilter] =
+    useState<CompletedFilter>("all");
+  const [visibilityFilter, setVisibilityFilter] =
+    useState<VisibilityFilter>("visible");
   const { data: todoData, isLoading: isTodoDataLoading } = useTodoListQuery({
     search: searchValue,
+    completed:
+      completedFilter === "completed"
+        ? true
+        : completedFilter === "uncompleted"
+        ? false
+        : undefined,
+    hidden:
+      visibilityFilter === "hidden"
+        ? true
+        : visibilityFilter === "visible"
+        ? false
+        : undefined,
   });
 
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
@@ -109,6 +127,10 @@ const DashboardPage = () => {
         onSelectedChildTodoChange={setSelectedChildTodo}
         onUpdateTodo={updateTodoHandler}
         onSearch={setSearchValue}
+        onVisibilityFilterChange={setVisibilityFilter}
+        onCompletedFilterChange={setCompletedFilter}
+        currentCompletedFilter={completedFilter}
+        currentVisibilityFilter={visibilityFilter}
       />
     </>
   );
