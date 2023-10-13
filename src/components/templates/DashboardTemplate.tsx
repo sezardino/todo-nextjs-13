@@ -19,6 +19,9 @@ export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   onSelectedTodoChange: (id: string | null) => void;
   onSelectedChildTodoChange: (id: string | null) => void;
   onUpdateTodo: (data: UpdateTodoBody) => void;
+  onCompleteTodo: (id: string) => void;
+  onHideTodo: (id: string) => void;
+  onDeleteRequest: (id: string) => void;
 };
 
 type TodoModalData = {
@@ -29,9 +32,12 @@ type TodoModalData = {
 export const DashboardTemplate: FC<DashboardProps> = (props) => {
   const {
     todo,
+    onCompleteTodo,
+    onHideTodo,
     onSelectedChildTodoChange,
     onSelectedTodoChange,
     onCreateChild,
+    onDeleteRequest,
     onUpdateTodo,
     list,
     onCreateTodo,
@@ -103,11 +109,12 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
           isOpen
           todo={todo}
           onClose={onDrawerCloseRequest}
-          onCompleteClick={() => undefined}
-          onCreateChildClick={() =>
+          onCompleteRequest={() => onCompleteTodo(todo.id)}
+          onDeleteRequest={() => onDeleteRequest(todo.id)}
+          onCreateChildRequest={() =>
             setTodoModalData({ variant: "child", parentId: todo.id })
           }
-          onVisibilityClick={() => undefined}
+          onHideRequest={() => onHideTodo(todo.id)}
           onChildClick={onSelectedChildTodoChange}
           onUpdateTodo={onUpdateTodo}
         />

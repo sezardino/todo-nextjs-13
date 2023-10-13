@@ -60,6 +60,9 @@ const DashboardPage = () => {
       <DashboardTemplate
         list={todoData}
         todo={todo}
+        onCompleteTodo={() => undefined}
+        onDeleteRequest={() => undefined}
+        onHideTodo={() => undefined}
         onCreateTodo={createTodoHandler}
         onSelectedTodoChange={setSelectedTodo}
         onCreateChild={createChildTodoHandler}
