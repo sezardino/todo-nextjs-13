@@ -7,6 +7,7 @@ import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/froala_style.min.css";
 
+import { Button } from "@nextui-org/react";
 import {
   KeyboardEvent,
   useRef,
@@ -17,6 +18,7 @@ import {
 import Froala from "react-froala-wysiwyg";
 import FroalaPreview from "react-froala-wysiwyg/FroalaEditorView";
 import { twMerge } from "tailwind-merge";
+import { Icon } from "./Icon";
 
 export interface EditorProps extends ComponentPropsWithoutRef<"div"> {
   onSave: (model: string) => void;
@@ -132,15 +134,19 @@ export const Editor: FC<EditorProps> = (props) => {
   const [isPreview, setIsPreview] = useState(true);
   const editorRef = useRef<Froala | null>(null);
 
-  const blurHandler = () => {
-    saveHandler();
+  const saveHandler = () => {
+    if (content === model) {
+      cancelHandler();
+      return;
+    }
+
+    onSave(model);
     setIsPreview(true);
   };
 
-  const saveHandler = () => {
-    if (content === model) return;
-
-    onSave(model);
+  const cancelHandler = () => {
+    setModel(content || "");
+    setIsPreview(true);
   };
 
   const keydownHandler = (evt: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -151,18 +157,30 @@ export const Editor: FC<EditorProps> = (props) => {
     <>
       <div {...rest}>
         {!isPreview && (
-          <Froala
-            ref={editorRef}
-            tag="textarea"
-            config={{
-              ...baseConfig,
-              height: 200,
-              events: { blur: blurHandler, keydown: keydownHandler },
-              placeholderText: placeholder,
-            }}
-            model={model}
-            onModelChange={setModel}
-          />
+          <div>
+            <Froala
+              ref={editorRef}
+              tag="textarea"
+              config={{
+                ...baseConfig,
+                height: 200,
+                events: { keydown: keydownHandler },
+                placeholderText: placeholder,
+              }}
+              model={model}
+              onModelChange={setModel}
+            />
+            <div className="flex items-center gap-3 flex-wrap mt-2 justify-end">
+              <Button onClick={saveHandler}>
+                <Icon name="HiOutlineSaveAs" size={18} />
+                Save
+              </Button>
+              <Button onClick={cancelHandler}>
+                <Icon name="HiOutlineXCircle" size={18} />
+                Cancel
+              </Button>
+            </div>
+          </div>
         )}
         {isPreview && (
           <div
