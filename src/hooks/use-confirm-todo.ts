@@ -6,8 +6,10 @@ type UseConfirmTodoArgs = {
   onHide: (id: string) => Promise<void>;
 };
 
+type ModalType = "delete" | "hide" | "complete";
+
 type ModalData = {
-  type: "delete" | "hide" | "complete";
+  type: ModalType;
   id: string;
 };
 
@@ -17,6 +19,24 @@ export const useConfirmTodo = (args: UseConfirmTodoArgs) => {
   const [modalData, setModalData] = useState<ModalData | null>(null);
 
   const closeConfirmDialog = () => setModalData(null);
+
+  const confirmHandler = useCallback(
+    async (type: ModalType) => {
+      if (!modalData) return;
+      if (type === "delete" && modalData.type !== "delete") return;
+      if (type === "complete" && modalData.type !== "complete") return;
+      if (type === "hide" && modalData.type !== "hide") return;
+      if (!modalData.id) return;
+
+      try {
+        if (type === "delete") await onDelete(modalData.id);
+        if (type === "complete") await onComplete(modalData.id);
+        if (type === "hide") await onHide(modalData.id);
+        setModalData(null);
+      } catch (error) {}
+    },
+    [modalData, onComplete, onDelete, onHide]
+  );
 
   const deleteHandler = useCallback(async () => {
     if (!modalData) return;
@@ -44,7 +64,7 @@ export const useConfirmTodo = (args: UseConfirmTodoArgs) => {
       return {
         title: "Confirm",
         description: "Are you sure you want to delete this todo?",
-        handler: deleteHandler,
+        handler: () => confirmHandler("delete"),
         trigger: "Delete",
         cancel: "Cancel",
       };
@@ -52,7 +72,7 @@ export const useConfirmTodo = (args: UseConfirmTodoArgs) => {
       return {
         title: "Confirm",
         description: "Are you sure you want to hide this todo?",
-        handler: () => undefined,
+        handler: () => confirmHandler("hide"),
         trigger: "Hide",
         cancel: "Cancel",
       };
@@ -61,7 +81,7 @@ export const useConfirmTodo = (args: UseConfirmTodoArgs) => {
       return {
         title: "Confirm",
         description: "Are you sure you want to complete this todo?",
-        handler: () => undefined,
+        handler: () => confirmHandler("complete"),
         trigger: "Complete",
         cancel: "Cancel",
       };

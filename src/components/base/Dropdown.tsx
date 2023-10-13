@@ -8,6 +8,7 @@ export type DropdownItem = {
   href?: string;
   to?: string;
   onClick?: () => void;
+  hidden?: boolean;
 };
 
 export type DropdownProps = Omit<MenuProps<"div">, "className"> & {
@@ -35,49 +36,53 @@ export const Dropdown: FC<DropdownProps> = (props) => {
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           {items.map((item, index) => (
-            <Menu.Item key={index}>
-              {({ active }) => (
-                <>
-                  {!!item.href && !item.to && (
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener"
-                      className={twMerge(
-                        active ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm text-gray-700"
+            <Fragment key={index}>
+              {!item.hidden && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <>
+                      {!!item.href && !item.to && (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener"
+                          className={twMerge(
+                            active ? "bg-gray-100" : "",
+                            "block px-4 py-2 text-sm text-gray-700"
+                          )}
+                          onClick={item.onClick}
+                        >
+                          {item.label}
+                        </a>
                       )}
-                      onClick={item.onClick}
-                    >
-                      {item.label}
-                    </a>
-                  )}
-                  {!!item.to && !item.href && (
-                    <Link
-                      href={item.to}
-                      className={twMerge(
-                        active ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm text-gray-700"
+                      {!!item.to && !item.href && (
+                        <Link
+                          href={item.to}
+                          className={twMerge(
+                            active ? "bg-gray-100" : "",
+                            "block px-4 py-2 text-sm text-gray-700"
+                          )}
+                          onClick={item.onClick}
+                        >
+                          {item.label}
+                        </Link>
                       )}
-                      onClick={item.onClick}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                  {!item.to && !item.href && (
-                    <button
-                      className={twMerge(
-                        active ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm text-gray-700"
+                      {!item.to && !item.href && (
+                        <button
+                          className={twMerge(
+                            active ? "bg-gray-100" : "",
+                            "block px-4 py-2 text-sm text-gray-700"
+                          )}
+                          onClick={item.onClick}
+                        >
+                          {item.label}
+                        </button>
                       )}
-                      onClick={item.onClick}
-                    >
-                      {item.label}
-                    </button>
+                    </>
                   )}
-                </>
+                </Menu.Item>
               )}
-            </Menu.Item>
+            </Fragment>
           ))}
         </Menu.Items>
       </Transition>

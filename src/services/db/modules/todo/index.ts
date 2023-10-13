@@ -15,9 +15,61 @@ import {
 export class TodoDBModule extends AbstractDBModule {
   async findOne(dto: FindOneTodoDto): Promise<Todo> {
     return await this.prismaService.todo.findUniqueOrThrow({
-      where: { id: dto.todoId, userId: dto.userId },
+      where: { id: dto.todoId, userId: dto.userId, hidden: false },
       include: { children: true, parent: true },
     });
+  }
+
+  async list(dto: TodoListDto) {
+    const { userId, limit, page, search, completed, hidden } = dto;
+
+    const where: Prisma.TodoWhereInput = {
+      userId,
+      parent: null,
+      hidden: false,
+    };
+
+    if (completed !== undefined) {
+      where.completed = completed;
+    }
+
+    if (hidden !== undefined) {
+      where.hidden = hidden;
+    }
+
+    if (!!search) {
+      where.title = { contains: search };
+    }
+
+    const count = await this.prismaService.todo.count({ where });
+
+    const { skip, take, meta } = getPagination(page, limit, count);
+
+    const todo = await this.prismaService.todo.findMany({
+      where,
+      take,
+      skip,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        hidden: true,
+        completed: true,
+        description: true,
+        children: true,
+      },
+    });
+
+    const mappedTodo = todo.map(({ description, children, ...todo }) => ({
+      ...todo,
+      hasDescription: !!description,
+      children: {
+        total: children.length,
+        completed: children.filter((c) => c.completed).length,
+      },
+    }));
+
+    return { data: mappedTodo, meta };
   }
 
   create(dto: CreateTodoDto) {
@@ -79,8 +131,13 @@ export class TodoDBModule extends AbstractDBModule {
   }
 
   async setComplete(dto: SetTodoCompleteDto) {
-    return await this.prismaService.todo.update({
-      where: { id: dto.todoId, userId: dto.userId },
+    return await this.prismaService.todo.updateMany({
+      where: {
+        OR: [
+          { parentId: dto.todoId, userId: dto.userId },
+          { id: dto.todoId, userId: dto.userId },
+        ],
+      },
       data: { completed: dto.completed },
     });
   }
@@ -90,53 +147,5 @@ export class TodoDBModule extends AbstractDBModule {
       where: { id: dto.todoId, userId: dto.userId },
       data: { hidden: dto.hidden },
     });
-  }
-
-  async list(dto: TodoListDto) {
-    const { userId, limit, page, search, completed, hidden } = dto;
-
-    const where: Prisma.TodoWhereInput = { userId, parent: null };
-
-    if (completed !== undefined) {
-      where.completed = completed;
-    }
-
-    if (hidden !== undefined) {
-      where.hidden = hidden;
-    }
-
-    if (!!search) {
-      where.title = { contains: search };
-    }
-
-    const count = await this.prismaService.todo.count({ where });
-
-    const { skip, take, meta } = getPagination(page, limit, count);
-
-    const todo = await this.prismaService.todo.findMany({
-      where,
-      take,
-      skip,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        hidden: true,
-        completed: true,
-        description: true,
-        children: true,
-      },
-    });
-
-    const mappedTodo = todo.map(({ description, children, ...todo }) => ({
-      ...todo,
-      hasDescription: !!description,
-      children: {
-        total: children.length,
-        completed: children.filter((c) => c.completed).length,
-      },
-    }));
-
-    return { data: mappedTodo, meta };
   }
 }

@@ -38,31 +38,33 @@ export const TodoDetails: FC<TodoDetailsProps> = (props) => {
 
   const hasParent = !!todo.parent;
 
-  const dropdownItems = useMemo<DropdownItem[]>(() => {
-    const parentItems = [
+  const dropdownItems = useMemo<DropdownItem[]>(
+    () => [
       {
         label: `${todo.hidden ? "Show" : "Hide"} Todo`,
         onClick: onHideRequest,
+        hidden: !!todo.parentId,
       },
-    ];
-
-    const commonItems = [
       {
         label: `Mark as ${todo.completed ? "Uncompleted" : "Completed"}`,
         onClick: onCompleteRequest,
+        hidden: !!todo.parent?.completed,
       },
       {
         label: "Delete",
         onClick: onDeleteRequest,
       },
-    ];
-
-    let items: DropdownItem[] = [];
-
-    if (!todo.parent) items = [...parentItems, ...items];
-
-    return [...items, ...commonItems];
-  }, [todo.completed, todo.hidden, todo.parent]);
+    ],
+    [
+      onCompleteRequest,
+      onDeleteRequest,
+      onHideRequest,
+      todo.completed,
+      todo.hidden,
+      todo.parent?.completed,
+      todo.parentId,
+    ]
+  );
 
   return (
     <section {...rest} className={twMerge(className)}>
