@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { Dialog, DialogProps } from "./Dialog";
 
 export type ConfirmDialogProps = PropsWithChildren &
-  Omit<DialogProps, "header" | "body" | "footer"> & {
+  Omit<DialogProps, "header" | "body" | "footer" | "children"> & {
     title: string;
     description?: string;
     cancelButton: { label: string; onClick?: () => void };

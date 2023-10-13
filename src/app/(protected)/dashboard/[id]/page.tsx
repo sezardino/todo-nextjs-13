@@ -4,15 +4,18 @@ import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
 import { TodoFormValues } from "@/components/forms/TodoForm";
 import { TodoTemplate } from "@/components/templates/TodoTemplate";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
+import { ProjectPageUrls } from "@/const/url";
 import { useCreateChildTodoMutation } from "@/libs/react-query/hooks/mutation/create-child";
 import { useDeleteTodoMutation } from "@/libs/react-query/hooks/mutation/delete-todo";
 import { useUpdateTodo } from "@/libs/react-query/hooks/mutation/update-todo";
 import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
 import { NextPage } from "next";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
   const { id } = props.params;
+  const router = useRouter();
 
   const { data: todo, isLoading: isTodoLoading } = useTodoQuery(id);
 
@@ -42,8 +45,13 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
     useDeleteTodoMutation();
 
   const deleteHandler = useCallback(
-    async (todoId = id) => deleteTodo(id),
-    [deleteTodo, id]
+    async (todoId: string) =>
+      deleteTodo(todoId, {
+        onSuccess: () => {
+          if (todoId === id) router.push(ProjectPageUrls.dashboard);
+        },
+      }),
+    [deleteTodo, id, router]
   );
 
   const isLoading =
@@ -60,8 +68,8 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
         todo={todo}
         childTodo={childTodo}
         onSelectChildTodo={setSelectedChild}
-        onCompleteTodo={() => undefined}
-        onHideTodo={() => undefined}
+        onCompleteTodo={async () => undefined}
+        onHideTodo={async () => undefined}
         onCreateChild={createChildTodoHandler}
         onUpdateTodo={updateTodoHandler}
         onDeleteTodo={deleteHandler}

@@ -1,10 +1,12 @@
 import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
+import { useConfirmTodo } from "@/hooks/use-confirm-todo";
 import {
   TodoListResponse,
   TodoOneResponse,
 } from "@/services/db/modules/todo/types";
 import { Button } from "@nextui-org/react";
 import { useState, type ComponentPropsWithoutRef, type FC } from "react";
+import { ConfirmDialog } from "../base/ConfirmDialog";
 import { Icon } from "../base/Icon";
 import { TodoFormValues } from "../forms/TodoForm";
 import { TodoDrawer } from "../modules/todo/TodoDrawer";
@@ -19,9 +21,9 @@ export type DashboardProps = ComponentPropsWithoutRef<"section"> & {
   onSelectedTodoChange: (id: string | null) => void;
   onSelectedChildTodoChange: (id: string | null) => void;
   onUpdateTodo: (data: UpdateTodoBody) => void;
-  onCompleteTodo: (id: string) => void;
-  onHideTodo: (id: string) => void;
-  onDeleteRequest: (id: string) => void;
+  onCompleteTodo: (id: string) => Promise<any>;
+  onHideTodo: (id: string) => Promise<any>;
+  onDeleteTodo: (id: string) => Promise<any>;
 };
 
 type TodoModalData = {
@@ -37,7 +39,7 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
     onSelectedChildTodoChange,
     onSelectedTodoChange,
     onCreateChild,
-    onDeleteRequest,
+    onDeleteTodo,
     onUpdateTodo,
     list,
     onCreateTodo,
@@ -47,6 +49,17 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
   const [todoModalData, setTodoModalData] = useState<TodoModalData | null>(
     null
   );
+
+  const {
+    copy: confirmModalCopy,
+    modalData: confirmModalData,
+    onCancelTodoRequest,
+    onTodoRequest,
+  } = useConfirmTodo({
+    onComplete: onCompleteTodo,
+    onDelete: onDeleteTodo,
+    onHide: onHideTodo,
+  });
 
   const createTodoHandler = async (values: TodoFormValues) => {
     if (!todoModalData) return;
@@ -109,16 +122,33 @@ export const DashboardTemplate: FC<DashboardProps> = (props) => {
           isOpen
           todo={todo}
           onClose={onDrawerCloseRequest}
-          onCompleteRequest={() => onCompleteTodo(todo.id)}
-          onDeleteRequest={() => onDeleteRequest(todo.id)}
+          onCompleteRequest={() =>
+            onTodoRequest({ id: todo.id, type: "complete" })
+          }
+          onDeleteRequest={() => onTodoRequest({ id: todo.id, type: "delete" })}
           onCreateChildRequest={() =>
             setTodoModalData({ variant: "child", parentId: todo.id })
           }
-          onHideRequest={() => onHideTodo(todo.id)}
+          onHideRequest={() => onTodoRequest({ id: todo.id, type: "hide" })}
           onChildClick={onSelectedChildTodoChange}
           onUpdateTodo={onUpdateTodo}
         />
       )}
+
+      <ConfirmDialog
+        isOpen={!!confirmModalData}
+        onClose={onCancelTodoRequest}
+        title={confirmModalCopy.title}
+        description={confirmModalCopy.description}
+        confirmButton={{
+          label: confirmModalCopy.trigger,
+          onClick: confirmModalCopy.handler,
+        }}
+        cancelButton={{
+          label: confirmModalCopy.cancel,
+          onClick: onCancelTodoRequest,
+        }}
+      />
     </>
   );
 };

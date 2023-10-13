@@ -6,6 +6,7 @@ import { DashboardTemplate } from "@/components/templates/DashboardTemplate";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { useCreateChildTodoMutation } from "@/libs/react-query/hooks/mutation/create-child";
 import { useCreateTodoMutation } from "@/libs/react-query/hooks/mutation/create-todo";
+import { useDeleteTodoMutation } from "@/libs/react-query/hooks/mutation/delete-todo";
 import { useUpdateTodo } from "@/libs/react-query/hooks/mutation/update-todo";
 import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
 import { useTodoListQuery } from "@/libs/react-query/hooks/query/todo-list";
@@ -47,6 +48,14 @@ const DashboardPage = () => {
     [createChildTodo]
   );
 
+  const { mutateAsync: deleteTodo, isLoading: isDeleteLoading } =
+    useDeleteTodoMutation();
+
+  const deleteHandler = useCallback(
+    async (todoId: string) => deleteTodo(todoId),
+    [deleteTodo]
+  );
+
   const isLoading =
     isTodoDataLoading ||
     isTodoLoading ||
@@ -60,9 +69,9 @@ const DashboardPage = () => {
       <DashboardTemplate
         list={todoData}
         todo={todo}
-        onCompleteTodo={() => undefined}
-        onDeleteRequest={() => undefined}
-        onHideTodo={() => undefined}
+        onCompleteTodo={async () => undefined}
+        onDeleteTodo={deleteHandler}
+        onHideTodo={async () => undefined}
         onCreateTodo={createTodoHandler}
         onSelectedTodoChange={setSelectedTodo}
         onCreateChild={createChildTodoHandler}
