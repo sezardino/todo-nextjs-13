@@ -62,7 +62,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
                   <span
                     className={twMerge(
                       "ml-3",
-                      isExpanded && !isOpen && "sr-only"
+                      !isExpanded && !isOpen && "sr-only"
                     )}
                   >
                     {item.label}
@@ -79,7 +79,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
         onClick={toggleExpanded}
       >
         <Icon
-          name={isExpanded ? "HiChevronDoubleRight" : "HiChevronDoubleLeft"}
+          name={!isExpanded ? "HiChevronDoubleRight" : "HiChevronDoubleLeft"}
           size={14}
         />
       </button>
