@@ -1,3 +1,4 @@
+import { projectToasts } from "@/libs/react-toastify";
 import { api } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TODO_QUERY_KEY } from "../query/todo";
@@ -11,6 +12,10 @@ export const useDeleteTodoMutation = () => {
     onSuccess: (_, id) => {
       client.invalidateQueries([TODO_LIST_QUERY_KEY]);
       client.invalidateQueries([TODO_QUERY_KEY, id]);
+      projectToasts({ type: "success", message: "Todo deleted!" });
+    },
+    onError: () => {
+      projectToasts({ type: "error", message: "Error deleting todo!" });
     },
   });
 };
