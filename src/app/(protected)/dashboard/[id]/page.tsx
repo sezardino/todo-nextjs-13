@@ -5,10 +5,13 @@ import { TodoFormValues } from "@/components/forms/TodoForm";
 import { TodoTemplate } from "@/components/templates/TodoTemplate";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import { ProjectPageUrls } from "@/const/url";
+import { useCompleteTodoMutation } from "@/libs/react-query/hooks/mutation/complete-todo";
 import { useCreateChildTodoMutation } from "@/libs/react-query/hooks/mutation/create-child";
 import { useDeleteTodoMutation } from "@/libs/react-query/hooks/mutation/delete-todo";
+import { useHideTodoMutation } from "@/libs/react-query/hooks/mutation/hide-todo";
 import { useUpdateTodo } from "@/libs/react-query/hooks/mutation/update-todo";
 import { useTodoQuery } from "@/libs/react-query/hooks/query/todo";
+import { TodoOneResponse } from "@/services/db/modules/todo/types";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -41,6 +44,10 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
     [id, updateTodo]
   );
 
+  const { mutateAsync: completeTodo, isLoading: isCompleteTodoLoading } =
+    useCompleteTodoMutation();
+  const { mutateAsync: hideTodo, isLoading: isHideTodoLoading } =
+    useHideTodoMutation();
   const { mutateAsync: deleteTodo, isLoading: isDeleteLoading } =
     useDeleteTodoMutation();
 
@@ -54,12 +61,42 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
     [deleteTodo, id, router]
   );
 
+  const completeHandler = useCallback(
+    async (todoId: string) => {
+      let neededTodo: TodoOneResponse | undefined;
+
+      if (childTodo?.id === todoId) neededTodo === childTodo;
+      if (todo?.id === todoId) neededTodo === todo;
+
+      if (!neededTodo) return;
+
+      completeTodo({ id: todoId, completed: !neededTodo.completed });
+    },
+    [childTodo, completeTodo, todo]
+  );
+
+  const hideHandler = useCallback(
+    async (todoId: string) => {
+      let neededTodo: TodoOneResponse | undefined;
+
+      if (childTodo?.id === todoId) neededTodo === childTodo;
+      if (todo?.id === todoId) neededTodo === todo;
+
+      if (!neededTodo) return;
+
+      hideTodo({ id: todoId, visibility: !neededTodo.hidden });
+    },
+    [childTodo, hideTodo, todo]
+  );
+
   const isLoading =
     isTodoLoading ||
     isChildLoading ||
     isCreateChildLoading ||
     isUpdateTodoLoading ||
-    isDeleteLoading;
+    isDeleteLoading ||
+    isCompleteTodoLoading ||
+    isHideTodoLoading;
 
   return (
     <>
@@ -68,8 +105,8 @@ const TodoPage: NextPage<{ params: { id: string } }> = (props) => {
         todo={todo}
         childTodo={childTodo}
         onSelectChildTodo={setSelectedChild}
-        onCompleteTodo={async () => undefined}
-        onHideTodo={async () => undefined}
+        onCompleteTodo={completeHandler}
+        onHideTodo={hideHandler}
         onCreateChild={createChildTodoHandler}
         onUpdateTodo={updateTodoHandler}
         onDeleteTodo={deleteHandler}
