@@ -42,7 +42,8 @@ export const TodoList: FC<TodoListProps> = (props) => {
       <ul
         className={twMerge(
           "grid",
-          viewType === "grid" && "grid-cols-2 gap-5",
+          viewType === "grid" &&
+            "grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-5",
           viewType === "list" && "gap-1"
         )}
       >
