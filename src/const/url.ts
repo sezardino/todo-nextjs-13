@@ -17,6 +17,8 @@ export const ProjectApiUrls = {
   todoList: "/api/todo",
   createTodo: "/api/todo",
   todo: (id: string) => `/api/todo/${id}`,
+  completeTodo: (id: string) => `/api/todo/${id}/complete`,
+  visibilityTodo: (id: string) => `/api/todo/${id}/visibility`,
   todoChild: (id: string) => `/api/todo/${id}/child`,
   deleteTodo: (id: string) => `/api/todo/${id}`,
 };

@@ -1,5 +1,7 @@
 import { CreateChildTodoBody } from "@/app/api/todo/[id]/child/schema";
+import { SetCompletedBody } from "@/app/api/todo/[id]/complete/schema";
 import { UpdateTodoBody } from "@/app/api/todo/[id]/schema";
+import { SetVisibilityBody } from "@/app/api/todo/[id]/visibility/schema";
 import { CreateTodoBody, TodoListBody } from "@/app/api/todo/schema";
 import { ProjectApiUrls } from "@/const/url";
 import {
@@ -42,5 +44,18 @@ export class TodoApiService extends AbstractApiModule {
 
   async delete(id: string) {
     return this.fetcher(ProjectApiUrls.todo(id), { method: "DELETE" });
+  }
+
+  async complete(data: SetCompletedBody & { id: string }) {
+    return this.fetcher(ProjectApiUrls.completeTodo(data.id), {
+      method: "POST",
+      data: { completed: data.completed },
+    });
+  }
+  async hide(data: SetVisibilityBody & { id: string }) {
+    return this.fetcher(ProjectApiUrls.visibilityTodo(data.id), {
+      method: "POST",
+      data: { visibility: data.visibility },
+    });
   }
 }
