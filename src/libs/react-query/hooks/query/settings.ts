@@ -1,7 +1,7 @@
 import { api } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 
-const SETTINGS_QUERY_KEY = "settings";
+export const SETTINGS_QUERY_KEY = "settings";
 
 export const useSettingsQuery = () =>
   useQuery({

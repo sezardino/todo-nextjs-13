@@ -2,7 +2,7 @@ import { TodoListBody } from "@/app/api/todo/schema";
 import { api } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 
-const TODO_LIST_QUERY_KEY = "todo-list";
+export const TODO_LIST_QUERY_KEY = "todo-list";
 
 export const useTodoListQuery = (params: TodoListBody) =>
   useQuery({
