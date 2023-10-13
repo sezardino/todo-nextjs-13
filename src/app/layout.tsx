@@ -6,6 +6,8 @@ import { Providers } from "./provider";
 import { nextAuthOptions } from "@/libs/next-auth";
 import "@/styles/global.css";
 import { getServerSession } from "next-auth";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +23,7 @@ const RootLayout: FC<PropsWithChildren> = async ({ children }) => {
     <html lang="en">
       <body className={inter.className}>
         <Providers session={session}>{children}</Providers>
+        <ToastContainer />
       </body>
     </html>
   );
